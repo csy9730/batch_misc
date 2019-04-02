@@ -1,0 +1,39 @@
+		IMPLICIT REAL*8 (A-H)
+		IMPLICIT REAL*8 (O-Z)
+		REAL*8 T(4),X(4),A(2,2),AINV(2,2),B(2,1),ANS(2,1)
+		T(1)=0
+		T(2)=1
+		T(3)=2
+		T(4)=3
+		X(1)=1.2
+		X(2)=0.2
+		X(3)=2.9
+		X(4)=2.1
+		N=4
+		SUM1=0
+		SUM2=0
+		SUM3=0
+		SUM4=0
+		DO 10 I=1,4
+		SUM1=SUM1+T(I)
+		SUM2=SUM2+T(I)*T(I)
+		SUM3=SUM3+X(I)
+		SUM4=SUM4+T(I)*X(I)
+10 	CONTINUE
+		A(1,1)=N
+		A(1,2)=SUM1
+		A(2,1)=SUM1
+		A(2,2)=SUM2
+		DET=A(1,1)*A(2,2)-A(1,2)*A(2,1)
+		AINV(1,1)=A(2,2)/DET
+		AINV(1,2)=-A(1,2)/DET
+		AINV(2,1)=-A(2,1)/DET
+		AINV(2,2)=A(1,1)/DET
+		B(1,1)=SUM3
+		B(2,1)=SUM4
+		CALL MATMUL(AINV,2,2,B,2,1,ANS)
+		WRITE(9,*)ANS(1,1),ANS(2,1)
+		!PAUSE
+		END
+!C SUBROUTINE MATMUL IS SHOWN IN LISTING 1.4
+

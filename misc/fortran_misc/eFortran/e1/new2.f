@@ -1,0 +1,30 @@
+		IMPLICIT REAL*8 (A-H)
+		IMPLICIT REAL*8 (O-Z)
+		REAL*8 S(3,2),T(3,2),U(3,2)
+		S(1,1)=2.
+		S(1,2)=-6.
+		S(2,1)=1.
+		S(2,2)=5.
+		S(3,1)=-2.
+		S(3,2)=3.
+		T(1,1)=9.
+		T(1,2)=1.
+		T(2,1)=-7.
+		T(2,2)=2.
+		T(3,1)=5.
+		T(3,2)=8.
+		CALL MATADD(S,3,2,T,U)
+		WRITE(9,*)U(1,1),U(1,2)
+		WRITE(9,*)U(2,1),U(2,2)
+		WRITE(9,*)U(3,1),U(3,2)
+		END
+		SUBROUTINE MATADD(A,IROW,ICOL,B,C)
+		IMPLICIT REAL*8 (A-H)
+		IMPLICIT REAL*8 (O-Z)
+		REAL*8 A(IROW,ICOL),B(IROW,ICOL),C(IROW,ICOL)
+		DO 120 I=1,IROW
+		DO 120 J=1,ICOL
+		C(I,J)=A(I,J)+B(I,J)
+120	CONTINUE
+		RETURN
+		END

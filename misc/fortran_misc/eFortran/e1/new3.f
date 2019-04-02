@@ -1,0 +1,36 @@
+		IMPLICIT REAL*8 (A-H)
+		IMPLICIT REAL*8 (O-Z)
+		REAL*8 S(3,2),R(3,3),RS(3,2)
+		S(1,1)=2.
+		S(1,2)=-6.
+		S(2,1)=1.
+		S(2,2)=5.
+		S(3,1)=-2.
+		S(3,2)=3.
+		R(1,1)=-1.
+		R(1,2)=6.
+		R(1,3)=2.
+		R(2,1)=3.
+		R(2,2)=4.
+		R(2,3)=-5.
+		R(3,1)=7.
+		R(3,2)=2.
+		R(3,3)=8.
+		CALL MATMUL(R,3,3,S,3,2,RS)
+		WRITE(9,*)RS(1,1),RS(1,2)
+		WRITE(9,*)RS(2,1),RS(2,2)
+		WRITE(9,*)RS(3,1),RS(3,2)
+
+		END
+		SUBROUTINE MATMUL(A,IROW,ICOL,B,JROW,JCOL,C)
+		IMPLICIT REAL*8 (A-H)
+		IMPLICIT REAL*8 (O-Z)
+		REAL*8 A(IROW,ICOL),B(JROW,JCOL),C(IROW,JCOL)
+		DO 110 I=1,IROW
+		DO 110 J=1,JCOL
+		C(I,J)=0.
+		DO 110 K=1,ICOL
+		C(I,J)= C(I,J)+A(I,K)*B(K,J)
+110 	CONTINUE
+		RETURN
+		END

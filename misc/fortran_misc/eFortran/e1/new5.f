@@ -1,0 +1,29 @@
+		IMPLICIT REAL*8 (A-H)
+		IMPLICIT REAL*8 (O-Z)
+		REAL*8 S(3,3),T(3,3)
+		XK=10.
+		S(1,1)=8.
+		S(1,2)=2.
+		S(1,3)=-1.
+		S(2,1)=3.
+		S(2,2)=7
+		S(2,3)=6.
+		S(3,1)=4.
+		S(3,2)=1.
+		S(3,3)=7.
+		CALL MATSCA(S,3,3,XK,T)
+		WRITE(9,*)T(1,1),T(1,2),T(1,3)
+		WRITE(9,*)T(2,1),T(2,2),T(2,3)
+		WRITE(9,*)T(3,1),T(3,2),T(3,3)
+		!PAUSE
+		END
+		SUBROUTINE MATSCA(A,IROW,ICOL,B,C)
+		IMPLICIT REAL*8 (A-H)
+		IMPLICIT REAL*8 (O-Z)
+		REAL*8 A(IROW,ICOL),C(IROW,ICOL)
+		DO 110 I=1,IROW
+		DO 110 J=1,ICOL
+				C(I,J)=B*A(I,J)
+110 	CONTINUE
+		RETURN
+		END

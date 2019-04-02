@@ -1,0 +1,19 @@
+mstsc /v:192.168.23.25
+
+mstsc abc.rdp
+
+net use \\192.168.0.21\ipc$ "zlgzlab16" /user:"chenshengyong"
+
+net use \\192.168.23.25\ipc$ "zlgzlab16" /user:"chenshengyong"
+
+net use  h: \\192.168.23.25\c$ zlgzlab16 /user:chenshengyong
+net use  h: \\192.168.23.25\c$ zlgzlab16 /user:chenshengyong /del
+net use  j: \\192.168.23.25\d$ zlgzlab16 /user:chenshengyong
+
+net use  k: \\192.168.12.38\d$ a123456/user:liaojingsen /del
+
+net share 
+
+net share ipc$
+
+net share ipc$ /del
