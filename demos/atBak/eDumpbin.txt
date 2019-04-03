@@ -1,1 +1,0 @@
-dumpbin.exe /DIRECTIVES  E:\Code\zip\birdview_src\birdview\LEVMAR\levmar.lib
