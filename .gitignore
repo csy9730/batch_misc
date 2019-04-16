@@ -48,4 +48,6 @@ nosetests.xml
 
 # Virtual environment
 venv
-
+.vscode
+.*~
+*.un~

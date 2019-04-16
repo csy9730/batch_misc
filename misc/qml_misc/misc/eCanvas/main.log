@@ -1,0 +1,157 @@
+#include <QtGui>  
+#include <QtCore> 
+#include <windows.h>
+
+
+class Thread : public QThread  
+{  
+Q_OBJECT  
+private:  
+int number;  
+protected:  
+void run();  
+public:  
+Thread(QObject *parent=0);  
+~Thread();  
+signals:  
+void UpdateSignal(int num);  
+public slots:  
+void ResetSlot();  
+};  
+
+
+class Widget : public QWidget  
+{  
+Q_OBJECT  
+private:  
+QLabel *label;  
+QPushButton *startButton;  
+QPushButton *stopButton;  
+QPushButton *resetButton;  
+Thread *myThread;  
+int number;  
+public:  
+Widget(QWidget *parent = 0);  
+~Widget();  
+signals:  
+void ResetSignal();  
+public slots:  
+void ClearSlot();  
+void StartSlot();  
+void StopSlot();  
+void UpdateSlot(int num);  
+};  
+
+
+Thread::Thread(QObject *parent)  
+{  
+number = 0;  
+}  
+
+
+Thread::~Thread()  
+{  
+
+
+}  
+
+
+void Thread::run()  
+{  
+while(1)  
+{  
+//开启一个死循环，让number每秒自增1，并通过发送UpdateSignal信号通知主界面更新
+emit UpdateSignal(number);  
+number++;  
+sleep(1);  
+}  
+}  
+
+
+void Thread::ResetSlot()  
+{  
+number = 0;  
+emit UpdateSignal(number);  
+}  
+
+
+Widget::Widget(QWidget *parent)  
+{  
+//设置界面布局
+startButton = new QPushButton("start");  
+stopButton = new QPushButton("stop");  
+resetButton = new QPushButton("reset");  
+label = new QLabel("empty");  
+myThread = new Thread;  
+QVBoxLayout *layout = new QVBoxLayout;  
+layout->addWidget(label);  
+layout->addWidget(startButton);  
+layout->addWidget(stopButton);  
+layout->addWidget(resetButton);  
+setLayout(layout);  
+
+
+//连接各自信号糟
+connect(stopButton, SIGNAL(clicked()),   
+this, SLOT(StopSlot()));  
+connect(startButton, SIGNAL(clicked()),  
+this, SLOT(StartSlot()));  
+connect(resetButton, SIGNAL(clicked()),  
+this, SLOT(ClearSlot()));  
+connect(myThread, SIGNAL(UpdateSignal(int)),   
+this, SLOT(UpdateSlot(int)));  
+connect(this, SIGNAL(ResetSignal()),  
+myThread, SLOT(ResetSlot()));  
+
+
+
+
+setWindowTitle("Thread Test");  
+resize(200, 200);  
+myThread->start();  
+
+
+}  
+
+
+Widget::~Widget()  
+{  
+
+
+}  
+
+
+void Widget::StartSlot()  
+{  
+myThread->start();  
+}  
+
+
+void Widget::StopSlot()  
+{  
+myThread->terminate();  
+}  
+
+
+void Widget::UpdateSlot(int num)  
+{  
+label->setText(QString::number(num));  
+}  
+
+
+void Widget::ClearSlot()  
+{  
+emit ResetSignal();  
+}  
+
+
+#include "main.moc"
+
+
+int main(int argc, char **argv)  
+{  
+QApplication app(argc, argv);  
+Widget *widget = new Widget;  
+widget->show();  
+return app.exec();  
+} 

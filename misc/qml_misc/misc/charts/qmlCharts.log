@@ -1,0 +1,6 @@
+qmlaxes:  listView+ ChartView*3
+qmlf1legends: new ChartView*3
+qmloscilloscope:ScopeView+ControlPanel
+qmlpiechart: ChartView
+qmlpolarchart:listView+ChartView*3
+qmlweather:
