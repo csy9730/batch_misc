@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>可编辑的表格</title>
-    <script src="./js/jquery-1.4.3.js"></script>
+    <script src="./js/jquery_1.4.3.js"></script>
  
     <style>
         table{
@@ -90,7 +90,12 @@
                 $('table tr:last').remove();
             });
             $('#deleteone').click(function () {
-                $('input[type="checkbox"]');
+                // $('input[type="checkbox"]').remove();
+                if($(this).is(':checked')){
+                    $('input[type="checkbox"]').remove();
+                }else{
+                    $('input[type="checkbox"]').removeAttr("checked");
+                }
  
             });
         })
