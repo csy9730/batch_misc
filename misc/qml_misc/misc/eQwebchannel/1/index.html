@@ -1,0 +1,26 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+    <title>QWebChannel交互Demo</title>
+    <body>
+        <h1 id=pH1> abc </h1>
+        <button onclick="sendMes()">发送消息</button>
+        <p id="mes"></p>
+        <!-- 引入qwebchannel.js，才能与QWebEngineView进行交互 -->
+        <script type="text/javascript" src="../js/qwebchannel.js"></script>
+        <script>
+            window.onload = function() {
+                new QWebChannel(qt.webChannelTransport, function (channel) {
+                    window.printer= channel.objects.printer;  // 此处channel.objects.printer中的printer就是上文提到的功能类注册的标识名
+                });
+            };
+            function sendMes() {  // 调用python端的功能类的方法执行操作
+                // pH1.text="qwe"
+                var a = printer.print('你收到一条网页发送的消息！')
+                printer.print(a+';收到的消息！')
+
+
+            }
+        </script>
+    </body>
+</html>

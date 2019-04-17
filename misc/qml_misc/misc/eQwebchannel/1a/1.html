@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta charset="utf-8" />
+        <script type="text/javascript" src="../js/qwebchannel.js"></script>
+        <title>QWebChannel test</title>
+        <script>
+            window.onload = function () {
+                new QWebChannel(qt.webChannelTransport, function (channel) {
+                    window.pyjs = channel.objects.pyjs;
+                    alert(pyjs.myHello())
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <h1 id=pH1> abc </h1>
+    </body>
+</html>

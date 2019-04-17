@@ -1,5 +1,5 @@
-import sys
-from PyQt5.QtCore import pyqtSlot
+import sys,os
+from PyQt5.QtCore import pyqtSlot,QUrl
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtWebChannel import QWebChannel
 from PyQt5.QtWebEngineWidgets import QWebEngineView, QWebEnginePage
@@ -9,7 +9,7 @@ html = '''
 <html>
     <head>
         <meta charset="utf-8"/>        
-        <script src="qrc:///qtwebchannel/qwebchannel.js"></script>
+        <script src="../js/qwebchannel.js"></script>
     </head>
     <body> <h2 id="header">Header.</h2> </body>
     <script>
@@ -32,9 +32,11 @@ class HelloWorldHtmlApp(QWebEngineView):
 
         # setup a page with my html
         my_page = QWebEnginePage(self)
-        my_page.setHtml(html)
-        self.setPage(my_page)
+        #my_page.setHtml(html)
+        #self.setPage(my_page)
 
+        url_string = (r"" + os.path.dirname(__file__) + "/2.html")
+        self.load(QUrl(url_string))
         # setup channel
         self.channel = QWebChannel()
         self.channel.registerObject('backend', self)
