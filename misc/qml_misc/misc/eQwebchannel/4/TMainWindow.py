@@ -46,8 +46,11 @@ class TMainWindow(QDialog):
         self.pWebChannel.registerObject("interactObj", self.pInteractObj)
  
         self.mpJSWebView.page().setWebChannel(self.pWebChannel)
- 
-        self.url = 'file:///D:/PyPro/PyQtJSInteract/JSTest.html'
+
+        import os
+        url_string = (r"file:///" + os.path.dirname(__file__) + "\\1.html")
+        print(url_string)
+        self.url = url_string # 'file:///D:/PyPro/PyQtJSInteract/JSTest.html'
         self.mpJSWebView.page().load(QUrl(self.url))
         self.mpJSWebView.show()
  
