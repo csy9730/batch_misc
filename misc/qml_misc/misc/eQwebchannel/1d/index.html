@@ -1,0 +1,45 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+    <title>QWebChannel交互Demo</title>
+    <body>
+        <h1 id=pH1> Html与PyQt交互 </h1>
+        <textarea id="output" readonly="readonly"></textarea><br />  
+        <button onclick="startRcvMsg()">开始接收</button>
+        <button onclick="stopRcvMsg()">停止接收</button>
+        <br>
+        <br>
+        <input type = "text" name = "msgLine" id = "msgLine"></input>
+        <button onclick="sendMsg()">发送消息</button>
+        <p id="mes"></p>
+        <!-- 引入qwebchannel.js，才能与QWebEngineView进行交互 -->
+        <script type="text/javascript" src="../js/qwebchannel.js"></script>
+        <script>
+            //window.onload = function() {
+            document.addEventListener("DOMContentLoaded",function(){
+                new QWebChannel(qt.webChannelTransport, function (channel) {
+                    // 此处channel.objects.printer中的printer就是上文提到的功能类注册的标识名
+                    window.printer= channel.objects.printer;  
+                    window.printer.sgn.connect(function(st) {
+                        document.getElementById('output').value = st
+                    });
+                });
+            });
+            function sendMsg() {  // 调用python端的功能类的方法执行操作
+                var input = document.getElementById("msgLine");
+                if (!input.value) 
+                {  
+                    return;  
+                }  
+                var a = printer.print(input.value) // 'send:'
+                //printer.print(a+';收到的消息！')
+            }
+            function startRcvMsg() {  
+                printer.startEmit()
+            }
+            function stopRcvMsg() { 
+                printer.stoptEmit()
+            }
+        </script>
+    </body>
+</html>

@@ -1,3 +1,205 @@
+# PyQt和html基于QtWebChannel通信
+
+
+## 简介
+QT通信基础机制是信号与槽(signal & slot),
+在QML内js可以通过信号与槽机制与pyqt交互。当js封装在html时，html封装在QtWebEngineView时，与PyQt交互就比较困难，此时只能通过QtWebChannel实现交互。
+## 基础
+PyQt和html基于QtWebChannel通信程序由QWebEngineView界面前端，QApplication后台和QObject（核心功能）组成。
+QWebEngineView与QWebChannel连接，QWebChannel绑定QObject。
+
+``` python
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    browser = QWebEngineView()  # 新增一个浏览器引擎
+    browser.setWindowTitle('QWebChannel交互Demo')
+    channel = QWebChannel()  # 增加一个通信中需要用到的频道
+    printer = Print()  # 通信过程中需要使用到的功能类
+    channel.registerObject('printer', printer)  # 将功能类注册到频道中，注册名可以任意，但将在网页中作为标识
+    browser.page().setWebChannel(channel)  # 在浏览器中设置该频道
+    browser.load(QUrl(r"file:///D:/1/index.html"))
+    browser.show()
+    sys.exit(app.exec_())
+```
+
+## js调用pyqt函数
+
+``` html
+<button onclick="sendMes()">发送消息</button>
+<script type="text/javascript" src="../js/qwebchannel.js"></script>
+<script>
+    new QWebChannel(qt.webChannelTransport, function (channel) {
+        window.printer= channel.objects.printer;  // 功能类注册的标识名});
+    function sendMes() {  
+        // 调用python端的功能类的方法执行操作
+        var a = printer.print('你收到一条网页发送的消息！')
+        printer.print(a+';收到的消息！')
+    }
+</script>
+```
+
+``` python
+class Print(QObject):
+    @pyqtSlot(str, result=str) 
+    def print(self, content):
+        print(content)
+        self.strval = content
+        return 'rcv:' + content
+    @pyqtSlot()
+    def startEmit(self):
+        self.timer.start(1000)
+ ```
+ 
+## pyqt发信号到js
+
+``` python
+class Print(QObject):
+    sgn = pyqtSignal(str)
+    def emitAll(self):
+        self.sgn.emit(self.strval)
+        print("emit")
+        self.strval +=random.choice('abcdefghijklmnopqrstuvwxyz')
+```
+
+``` html.hbs?linenums
+new QWebChannel(qt.webChannelTransport, function (channel) {
+    window.printer = channel.objects.printer;
+    window.printer.sgn.connect(function(str) 
+    {  
+        alert("Received string from Qt: " + str);  
+    });    
+})
+```
+
+
+## html调用qml？
+
+
+## html
+
+```
+browser.page().runJavaScript("foo()") 
+```
+
+
+
+## demo
+demo包括三个文件
+* index.html
+* main.py
+* qwebchannel.js
+
+其中qwebchannel.js是从Qt官网下载可得。
+以上demo可以实现，PyQt端定时发送字符串到QtWebEngine,QtWebEngine接收字符串并显示在页面。
+QtWebEngine可以通过网页点击事件发送字符串到PyQt端。
+
+main.py
+``` python?linenums
+#! /usr/bin/env
+# -*- coding: utf-8 -*-
+# webview.py
+
+import sys,os
+import random
+from PyQt5.QtWidgets import QApplication
+from PyQt5.QtCore import QObject, pyqtSlot, QUrl,pyqtSignal,QTimer
+from PyQt5.QtWebChannel import QWebChannel
+from PyQt5.QtWebEngineWidgets import QWebEngineView
+# print(os.path.dirname(__file__)
+class Print(QObject):
+    sgn = pyqtSignal(str)
+    def __init__(self):
+        super(Print, self).__init__()
+        self.strval = ""
+        self.timer = QTimer()
+        self.timer.timeout.connect(self.emitAll)  # 调用QML函数
+    @pyqtSlot(str, result=str) 
+    def print(self, content):
+        print(content)
+        self.strval = content
+        return 'rcv:' + content
+    def emitAll(self):
+        self.sgn.emit(self.strval)
+        print("emit")
+        self.strval +=random.choice('abcdefghijklmnopqrstuvwxyz')
+
+    @pyqtSlot()
+    def startEmit(self):
+        self.timer.start(1000)
+
+    @pyqtSlot()
+    def stoptEmit(self):
+        print("stop emit")
+        self.timer.stop()
+
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    browser = QWebEngineView()  
+    browser.setWindowTitle('QWebChannel交互Demo')
+    browser.resize(900, 600)
+    channel = QWebChannel()  
+    printer = Print()  
+    channel.registerObject('printer', printer)  
+    browser.page().setWebChannel(channel)  
+    url_string = (r"file:///" + os.path.dirname(__file__) + "/index.html")
+    browser.load(QUrl(url_string))
+    # printer.emitAll()
+    browser.show()
+    printer.startEmit()
+    sys.exit(app.exec_())
+```
+
+index.html
+``` html?linenums
+<!-- index.html -->
+<!DOCTYPE html>
+<html>
+    <title>QWebChannel交互Demo</title>
+    <body>
+        <h1 id=pH1> Html与PyQt交互 </h1>
+        <textarea id="output" readonly="readonly"></textarea><br />  
+        <button onclick="startRcvMsg()">开始接收</button>
+        <button onclick="stopRcvMsg()">停止接收</button>
+        <br>
+        <br>
+        <input type = "text" name = "msgLine" id = "msgLine"></input>
+        <button onclick="sendMsg()">发送消息</button>
+        <p id="mes"></p>
+        <!-- 引入qwebchannel.js，才能与QWebEngineView进行交互 -->
+        <script type="text/javascript" src="../js/qwebchannel.js"></script>
+        <script>
+            //window.onload = function() {
+            document.addEventListener("DOMContentLoaded",function(){
+                new QWebChannel(qt.webChannelTransport, function (channel) {
+                    // 此处channel.objects.printer中的printer就是上文提到的功能类注册的标识名
+                    window.printer= channel.objects.printer;  
+                    window.printer.sgn.connect(function(st) {
+                        document.getElementById('output').value = st
+                    });
+                });
+            });
+            function sendMsg() {  // 调用python端的功能类的方法执行操作
+                var input = document.getElementById("msgLine");
+                if (!input.value) 
+                {  
+                    return;  
+                }  
+                var a = printer.print(input.value) // 'send:'
+                //printer.print(a+';收到的消息！')
+            }
+            function startRcvMsg() {  
+                printer.startEmit()
+            }
+            function stopRcvMsg() { 
+                printer.stoptEmit()
+            }
+        </script>
+    </body>
+</html>
+```
+
+qwebchannel.js
+``` javascript?linenums
 /****************************************************************************
 **
 ** Copyright (C) 2016 The Qt Company Ltd.
@@ -416,3 +618,7 @@ if (typeof module === 'object') {
         QWebChannel: QWebChannel
     };
 }
+
+
+```
+
