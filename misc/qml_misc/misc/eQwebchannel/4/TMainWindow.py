@@ -16,10 +16,10 @@ class TMainWindow(QDialog):
  
         self.mpQtSendLineEdit = QLineEdit(self)
  
-        self.mpQtSendBtnByInteractObj = QPushButton('Send', self)
+        self.mpQtSendBtnByInteractObj = QPushButton('Send3', self)
         self.mpQtSendBtnByInteractObj.setToolTip('Send message by Interact object style')
  
-        self.mpQtSendBtnByJavaScript = QPushButton('Send2', self)
+        self.mpQtSendBtnByJavaScript = QPushButton('Send24', self)
         self.mpQtSendBtnByJavaScript.setToolTip('Send message by runJavaScript style')
  
         self.pQtSendHLayout = QHBoxLayout()
@@ -48,12 +48,12 @@ class TMainWindow(QDialog):
         self.mpJSWebView.page().setWebChannel(self.pWebChannel)
 
         import os
-        url_string = (r"file:///" + os.path.dirname(__file__) + "\\1.html")
+        url_string = (r"" + os.path.dirname(__file__) + "/4.html")
         print(url_string)
         self.url = url_string # 'file:///D:/PyPro/PyQtJSInteract/JSTest.html'
         self.mpJSWebView.page().load(QUrl(self.url))
         self.mpJSWebView.show()
- 
+        return
         self.pJSTotalVLayout = QVBoxLayout()
         self.pJSTotalVLayout.setSpacing(0)
         self.pJSTotalVLayout.addWidget(self.mpJSWebView)
@@ -81,6 +81,7 @@ class TMainWindow(QDialog):
         self.mpQtContentTextEdit.appendPlainText(strParameter)
  
     def OnSendMessageByInteractObj(self):
+        print("click OnSendMessageByInteractObj")
         strMessage = self.mpQtSendLineEdit.text()
         if not strMessage:
             return
