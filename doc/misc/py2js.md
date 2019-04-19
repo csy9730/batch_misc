@@ -1,12 +1,18 @@
 # PyQt和html基于QtWebChannel通信
 
 
+<<<<<<< HEAD:doc/misc/py2js.md
 ## 简介
 QT通信基础机制是信号与槽(signal & slot),
 在QML内js可以通过信号与槽机制与pyqt交互。当js封装在html时，html封装在QtWebEngineView时，与PyQt交互就比较困难，此时只能通过QtWebChannel实现交互。
 ## 基础
 PyQt和html基于QtWebChannel通信程序由QWebEngineView界面前端，QApplication后台和QObject（核心功能）组成。
 QWebEngineView与QWebChannel连接，QWebChannel绑定QObject。
+=======
+## 基础
+QT通信基础机制是信号与槽(signal & slot),
+在QML内js可以通过信号与槽机制与pyqt交互。当js封装在html时，html封装在QtWebEngineView时，与PyQt交互就比较困难，此时只能通过QtWebChannel实现交互。
+>>>>>>> b79170bfa4f7b5698f2ac54a5ca2603ee0da34bd:doc/misc/py2js.md
 
 ``` python
 if __name__ == '__main__':
