@@ -1,50 +1,45 @@
-###Signal
-SIGNAL 
-ÎŞ²ÎÊı
-Ğ¯´ø²ÎÊı pyqtSignal(float)
-Ğ¯´ø¶à¸ö²ÎÊı pyqtSignal(float,int)
-Ğ¯´øÖØÔØ²ÎÊı 
-  pyqtSignal([int,int ],[])  
-Ğ¯´ølist,dict²ÎÊı   
-    pyqtSignal(list)  
-       
+# PyQtå’ŒQmlä¿¡å·äº¤äº’
+[TOC]
 
-###SLOT
-SLOT¿ÉÒÔĞ¯´ø²ÎÊıºÍ·µ»ØÖµ
+## ç®€ä»‹
+åŸºç¡€æ¦‚å¿µåŒ…æ‹¬ä¿¡å·ä¸æ§½(Signal&Slot)ï¼ŒPyQtä¸»è¦é€šè¿‡ä¿®é¥°ç¬¦è¡¨ç¤ºSignalå’ŒSlotã€‚
 
+### Signal
+SIGNAL æ ¹æ®å‚æ•°åˆ†ä¸ºä»¥ä¸‹å‡ ç§
+* æ— å‚æ•°
+* æºå¸¦å‚æ•° pyqtSignal(float)
+* æºå¸¦å¤šä¸ªå‚æ•° pyqtSignal(float,int)
+* æºå¸¦é‡è½½å‚æ•°   pyqtSignal([int,int ],[])  
+* æºå¸¦list,dictå‚æ•° pyqtSignal(list)  
 
-sleep »á×èÈûGUIÏìÓ¦
-timer ²»»áÍêÈ«×èÈûGUIÏìÓ¦
+### SLOT
+SLOTå¯ä»¥æºå¸¦å‚æ•°å’Œè¿”å›å€¼,ä¾‹å¦‚@pyqtSlot(float, result=str)
 
+### ä¿¡å·ç»‘å®š
 
- 
-###ĞÅºÅ°ó¶¨
-
-¸ÅÄî£º 
+æ¦‚å¿µï¼š 
      
-* signal        ĞÅºÅÁ¿£¬´Ó·¢ÉäÔ´¶ÔÏó emit¶Ô½ÓÊÕÔ´
-* slot        Ò»¸öÖ´ĞĞº¯Êı¾ä±ú£¬¿ÉÒÔ´ø²ÎÊıºÍ·µ»ØÖµ
-* context       ÉÏÏÂÎÄ
-* rootObject    UIµÄ¸ù¶ÔÏó
-* 
+* signal        ä¿¡å·é‡ï¼Œä»å‘å°„æºå¯¹è±¡ emitå¯¹æ¥æ”¶æº
+* slot        ä¸€ä¸ªæ‰§è¡Œå‡½æ•°å¥æŸ„ï¼Œå¯ä»¥å¸¦å‚æ•°å’Œè¿”å›å€¼
+* context       ä¸Šä¸‹æ–‡
+* connect       ç»‘å®š
 
 
-²ÎÊı¡¢·µ»ØÖµÈçºÎ´«µİ£¿
+rootObjectæ˜¯QMLç•Œé¢çš„æ ¹å¯¹è±¡
 
-#####QMLÓëPythonµÄĞÅºÅ½»»¥
+å‚æ•°ã€è¿”å›å€¼å¦‚ä½•ä¼ é€’ï¼Ÿ
 
-**QMLµ÷ÓÃPythonµÄSlot**
-
-**QML·¢ËÍsignalµ½Python**
-
-**Pythonµ÷ÓÃJsº¯Êı**
-
-**Python·¢ËÍsignalµ½Qml**
+#### QMLä¸Pythonçš„ä¿¡å·äº¤äº’
+QMLä¸Pythonçš„ä¿¡å·äº¤äº’åŒ…æ‹¬ä»¥ä¸‹æ–¹æ³•ï¼š
+**QMLè°ƒç”¨Pythonçš„Slot**
+**QMLå‘é€signalåˆ°Python**
+**Pythonè°ƒç”¨Jså‡½æ•°**
+**Pythonå‘é€signalåˆ°Qml**
 
 
 
-* QMLµ÷ÓÃPythonµÄSlot
- qmlÍ¨¹ırootContext°ó¶¨×Ô¶¨ÒåÀà£¬UIÖĞÖ±½Óµ÷ÓÃ @pyqtSlot(int,result=str)ĞŞÊÎµÄpythonº¯Êı
+##### QMLè°ƒç”¨Pythonçš„Slot
+ qmlé€šè¿‡rootContextç»‘å®šè‡ªå®šä¹‰ç±»QObjectï¼ŒUIä¸­ç›´æ¥è°ƒç”¨@pyqtSlot(int,result=str)ä¿®é¥°çš„pythonæ§½å‡½æ•° 
 
 ```javascript     
 onClicked: {
@@ -57,7 +52,7 @@ onClicked: {
 class MyClass(QObject):
     def __init__(self):
         super(MyClass, self).__init__()
-    # slot function, input param type:int£¬return type: str
+    # slot function, input param type:intï¼Œreturn type: str
     @pyqtSlot(int, result=str)   
     def returnValue(self, value):
         return str(value+10)    
@@ -67,8 +62,8 @@ def main():
     engine.rootContext().setContextProperty("con", con)
 
 ```
-* QML·¢ËÍĞÅºÅµ½Python
-QML¶¨ÒåĞÅºÅ£¬QML·¢³öĞÅºÅ£¬python Í¨¹ırootObject°ó¶¨²Û£¬ÊÕµ½ĞÅºÅpythonÔòÖ´ĞĞÏàÓ¦¶¯×÷¡£
+##### QMLå‘é€ä¿¡å·åˆ°Python
+QMLå®šä¹‰ä¿¡å·ï¼ŒQMLå‘å‡ºä¿¡å·ï¼Œpython é€šè¿‡rootObjectç»‘å®šæ§½ï¼Œæ”¶åˆ°ä¿¡å·pythonåˆ™æ‰§è¡Œç›¸åº”åŠ¨ä½œã€‚
 
 ```javascript
 signal sendClicked(string str) // QML define signal
@@ -85,8 +80,8 @@ def main():
     view.rootObject().sendClicked.connect(outputString) # python binding action
 ```
 
-* pythonµ÷ÓÃjsº¯Êı
-pythonÍ¨¹ırootObjectÖ±½Óµ÷ÓÃjavaScriptº¯Êı
+##### pythonè°ƒç”¨jså‡½æ•°
+pythoné€šè¿‡rootObjectç›´æ¥è°ƒç”¨javaScriptå‡½æ•°
 
 ```javascript
 Rectangle {
@@ -100,8 +95,7 @@ Rectangle {
         origin.x: 10; origin.y: 5
         angle: rotater.angle
     }
-    function updateRotater() {// ¶¨Òåº¯Êı                             
-        rotater.angle += 5
+    function updateRotater() {// å®šä¹‰å‡½æ•°                         rotater.angle += 5
     }
 }
 
@@ -111,10 +105,10 @@ Rectangle {
 def main():
     timer = QTimer()
     timer.start(2000)
-    timer.timeout.connect(view.rootObject().updateRotater) # µ÷ÓÃQMLº¯Êı
+    timer.timeout.connect(view.rootObject().updateRotater) # è°ƒç”¨QMLå‡½æ•°
 ```
   
-* python¶¨Òå@signal£¬°ó¶¨Jsº¯Êı£¬¶¨Òå·¢Éä
+##### pythonå®šä¹‰@signalï¼Œç»‘å®šJså‡½æ•°ï¼Œå®šä¹‰å‘å°„
 
 
 ```python
@@ -154,9 +148,9 @@ class Plot(QObject):
         self.updCanv.emit(float( points))
 ```
 
-###getObject
-QQuickViewÖ»ÓĞrootObject,Ã»ÓĞrootObjects
-QQmlApplicationEngineÓĞrootObjects()£¬¿ÉÒÔ»ñÈ¡QML×é¼ş¡£
+### getObject
+QQuickViewåªæœ‰rootObject,æ²¡æœ‰rootObjects
+QQmlApplicationEngineæœ‰rootObjects()ï¼Œå¯ä»¥è·å–QMLç»„ä»¶ã€‚
 
 
 'self.combo_label_choice = self.win.findChild(QObject, 'combo_label_choice')
@@ -166,7 +160,7 @@ plot.binding( engine.rootObjects()[0].findChild(QObject,"itemCanvas").addPoint2 
 
 
 
-#####°ó¶¨qObject
+##### ç»‘å®šqObject
 
 ```python
 self.win = parent
@@ -174,11 +168,11 @@ self.ctx = context
 self.btnOpen = self.win.findChild(QObject, 'btnOpen')
 ```
 
-#####ÉèÖÃÊôĞÔ£º
+##### è®¾ç½®å±æ€§ï¼š
 ```python
-self.btnOpen.setProperty('text', '¹Ø±Õ´®¿Ú')
+self.btnOpen.setProperty('text', 'å…³é—­ä¸²å£')
 ```	
-#####ÉèÖÃ±äÁ¿
+##### è®¾ç½®å˜é‡
 
 ```	
 self.ctx.setContextProperty('ports', 'abc')
@@ -186,10 +180,15 @@ self.ctx.setContextProperty('ports', 'abc')
         #self.cmbPort.setProperty('currentIndex', self.cmbPort.find(self.conf.get('serial', 'port')))
         #self.cmbBaud.setProperty('currentIndex', self.cmbBaud.find(self.conf.get('serial', 'baudrate')))
 
-#####¶ÁÈ¡ÊôĞÔ
+##### è¯»å–å±æ€§
 
 ```python
 self.ser.port = self.cmbPort.property('currentText')[:self.cmbPort.property('currentText').index(' ')]
 self.ser.parity = self.cmbParity.property('currentText')[0]
 self.ser.baudrate = int(self.cmbBaud.property('currentText'))
 ```
+
+
+### misc
+sleep ä¼šé˜»å¡GUIå“åº”
+timer ä¸ä¼šå®Œå…¨é˜»å¡GUIå“åº”
