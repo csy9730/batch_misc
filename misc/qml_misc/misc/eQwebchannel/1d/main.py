@@ -47,6 +47,7 @@ if __name__ == '__main__':
     url_string = (r"" + os.path.split(os.path.abspath(__file__))[0]+ "\index.html").replace("\\",'/')
     #print( os.path.dirname(__file__)) 
     print(url_string)
+
     browser.load(QUrl(url_string))
     # printer.emitAll()
     browser.show()
