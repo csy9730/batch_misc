@@ -44,7 +44,10 @@ if __name__ == '__main__':
     printer = Print()  # 通信过程中需要使用到的功能类
     channel.registerObject('printer', printer)  # 将功能类注册到频道中，注册名可以任意，但将在网页中作为标识
     browser.page().setWebChannel(channel)  # 在浏览器中设置该频道
+<<<<<<< HEAD
+=======
 
+>>>>>>> 9c9ffc327c2bd0673cd77827974af436360fc2a7
     url_string = (r"" + os.path.split(os.path.abspath(__file__))[0]+ "\index.html").replace("\\",'/')
     #print( os.path.dirname(__file__)) 
     print(url_string)

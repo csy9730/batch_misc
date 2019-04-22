@@ -5,56 +5,85 @@
 	<script src="js/FileSaver.min.js"></script>
 </head>
 <body>
- <input type="file" id="files"/>
+
+<input type="file" id="files"/>
+<br>
+<button onclick="downloadJson(dat)">添加</button>
+<button onclick="downloadText(dat)">删除</button>
+<button onclick="downloadText(dat)">写入</button>
+
 <table id="table" border="1" cellspacing="0" cellpadding="0" >
    <tr>
-        <th>BrandName</th>
-        <th>Modul</th>
-        <th>Quantity</th>
-        <th>Datecode</th>
-        <th>Remark</th>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Tag</th>
+        <th>Datetime</th>
+        <th>Height</th>
     </tr>
 </table>
-<button onclick="downloadJson(data)">导出生成json文件</button>
-<button onclick="downloadText(data)">导出生成文本</button>
+<button onclick="downloadJson(dat)">导出生成json文件</button>
+<button onclick="downloadText(dat)">导出生成文本</button>
 <script>
-	var data=[{"BrandName":"ACES","Modul":"91906-0227P","Quantity":"3057","Datecode":"W2Y","Remark":"stock"},
-	{"BrandName":"ADI","Modul":"ADM706TARZ-REEL","Quantity":"2145","Datecode":"W2Y","Remark":"stock"},
-	{"BrandName":"ADI","Modul":"ADR02AUJZ-REEL7","Quantity":"2131","Datecode":"W2Y","Remark":"stock"}];
-	
-window.onload=function(){ 
-    var table=document.getElementById("table");
-    for(var i=0;i<data.length;i++){
-		var row=table.insertRow(table.rows.length);
-		var c1=row.insertCell(0);
-		c1.innerHTML=data[i].BrandName;
-		var c2=row.insertCell(1);
-		c2.innerHTML=data[i].Modul;
-		var c3=row.insertCell(2);
-		c3.innerHTML=data[i].Quantity;
-		var c4=row.insertCell(3);
-		c4.innerHTML=data[i].Datecode;
-		var c5=row.insertCell(4);
-		c5.innerHTML=data[i].Remark;
-	}
-}
-
-    var students = [{
-        "name": "小明1",
-        "age": "6",
-        "sex": "男",
-        "height": "60"
+    var dat = [{
+        "Id":"1",
+        "Name": "小明1",
+        "Datetime": "6",
+        "Tag": "weekly",
+        "Height": "60"
     }, {
-        "name": "小明2",
-        "age": "7",
-        "sex": "男",
-        "height": "70"
+        "Id":"2",
+        "Name": "小明2",
+        "Datetime": "7",
+        "Tag": "work",
+        "Height": "70"
     }, {
-        "name": "小明3",
-        "age": "8",
-        "sex": "男",
-        "height": "80"
+        "Id":"3",
+        "Name": "小明3",
+        "Datetime": "8",
+        "Tag": "study",
+        "Height": "80"
     }];
+
+    function tableDisp(data){
+        var table=document.getElementById("table");
+        for(var i=0;i<data.length;i++){
+            var row=table.insertRow(table.rows.length);
+            var c1=row.insertCell(0);
+            c1.innerHTML=data[i].Id;
+            var c2=row.insertCell(1);
+            c2.innerHTML=data[i].Name;
+            var c3=row.insertCell(2);
+            c3.innerHTML=data[i].Tag;
+            var c4=row.insertCell(3);
+            c4.innerHTML=data[i].Datetime;
+            var c5=row.insertCell(4);
+            c5.innerHTML=data[i].Height;
+        }
+    }
+    window.onload=function(){ 
+        tableDisp(dat)
+    }
+
+    document.getElementById("files").addEventListener("change", handleFiles, false);
+    function handleFiles() {
+        var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
+        var name = selectedFile.name;//读取选中文件的文件名
+        var size = selectedFile.size;//读取选中文件的大小
+        console.log("文件名:"+name+"大小："+size);
+        var reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
+         reader.readAsText(selectedFile);//读取文件的内容
+ 
+         reader.onload = function(){
+             console.log("读取结果：", this.result);//当读取完成之后会回调这个函数，然后此时文件的内容存储到了result中。直接操作即可。
+ 
+             console.log("读取结果转为JSON：");
+             let json = JSON.parse(this.result);
+             console.log(json);
+             console.log(json[0].Name,json[0].Id);
+             tableDisp(json)
+         };
+ 
+     }
     // 导出生成json文件
     function downloadJson(data) {
         var blob = new Blob([JSON.stringify(data)], { type: "" });
