@@ -51,3 +51,5 @@ venv
 .vscode
 .*~
 *.un~
+demos/eGit/ePatch/2
+demos/eGit/ePatch/3
