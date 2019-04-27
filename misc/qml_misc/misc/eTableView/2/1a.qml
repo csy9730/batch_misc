@@ -5,6 +5,7 @@ Rectangle {
     width: 360
     height: 360
 
+	property var idx:1
     TableView{
         id: phoneTable
         anchors.fill: parent
@@ -81,8 +82,9 @@ Rectangle {
             running: true
             repeat: true
             onTriggered: {
+					idx+=1
                   var a= {
-                        "name": "小明"+ Math.random().toString() ,
+                        "name": "小明"+ idx.toString(),//Math.random().toString() ,
                         "cost": "6",
                         "manufacture": "男",
                     }
@@ -90,6 +92,18 @@ Rectangle {
                 phoneModel.append( a);
             }
         }
+		
+		
+		Timer{
+            id: timer3
+            interval: 2777
+            running: true
+            repeat: true
+            onTriggered: {
+                phoneModel.remove( phoneModel.count-3,1);
+            }
+        }
+		
     }
 
 }
