@@ -17,19 +17,20 @@
     //设置多个表格可编辑  
     function EditTables(){  
         for(var i=0;i<arguments.length;i++){  
-        SetTableCanEdit(arguments[i]);  
+            SetTableCanEdit(arguments[i]);  
         }  
     }  
       
     //设置表格是可编辑的  
     function SetTableCanEdit(table){  
         for(var i=1; i<table.rows.length;i++){  
-        SetRowCanEdit(table.rows[i]);  
+            SetRowCanEdit(table.rows[i]);  
         }  
     }  
       
     function SetRowCanEdit(row){  
-        for(var j=0;j<row.cells.length; j++){          
+        for(var j=0;j<row.cells.length; j++){         
+            if (j==1) continue; 
             //如果当前单元格指定了编辑类型，则表示允许编辑  
             var editType = row.cells[j].getAttribute("EditType");  
             if(!editType){  
@@ -38,7 +39,7 @@
             }  
             if(editType){  
                 row.cells[j].onclick = function (){  
-                EditCell(this);  
+                    EditCell(this);  
                 }  
             }  
         }  
@@ -49,8 +50,8 @@
       
         var editType = element.getAttribute("EditType");  
         if(!editType){  
-        //如果当前单元格没有指定，则查看当前列是否指定  
-        editType = element.parentNode.parentNode.rows[0].cells[element.cellIndex].getAttribute("EditType");  
+            //如果当前单元格没有指定，则查看当前列是否指定  
+            editType = element.parentNode.parentNode.rows[0].cells[element.cellIndex].getAttribute("EditType");  
         }  
       
         switch(editType){  
@@ -175,7 +176,11 @@
         var startIndex = $.inArray(lastRow,table.rows);
         var endIndex = table.rows.length; 
         table.tBodies[0].appendChild(newRow);  
-        newRow.cells[1].innerHTML=startIndex; // endIndex-startIndex
+        //newRow.cells[1].innerHTML=startIndex; // endIndex-startIndex
+        idMax+=1
+        newRow.cells[1].innerHTML=idMax; // endIndex-startIndex
+        newRow.cells[4].innerHTML= formatDate(new Date().getTime())
+       
         SetRowCanEdit(newRow);  
         return newRow;  
     }  
@@ -210,15 +215,14 @@
     function GetRowData(row){  
         var rowData = {};  
         for(var j=0;j<row.cells.length; j++){  
-        name = row.parentNode.rows[0].cells[j].getAttribute("Name");  
-        if(name){  
-            var value = row.cells[j].getAttribute("Value");  
-            if(!value){  
-            value = row.cells[j].innerHTML;  
+            name = row.parentNode.rows[0].cells[j].getAttribute("Name");  
+            if(name){  
+                var value = row.cells[j].getAttribute("Value");  
+                if(!value){  
+                    value = row.cells[j].innerHTML;  
+                }                  
+                rowData[name] = value;  
             }  
-            
-            rowData[name] = value;  
-        }  
         }  
         //alert("ProductName:" + rowData.ProductName);  
         //或者这样：alert("ProductName:" + rowData["ProductName"]);  
@@ -346,11 +350,11 @@
     <table width="698" border="0" cellpadding="0" cellspacing="0" id="tabProduct">  
         <tr>  
           <td width="32" align="center" bgcolor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
-          <td width="186" bgcolor="#EFEFEF" Name="Id" EditType="TextBox">序号</td>  
-          <td width="152" bgcolor="#EFEFEF" Name="Name" EditType="TextBox"  >名称</td>  
-          <td width="103" bgcolor="#EFEFEF" Name="Tag"  EditType="DropDownList" DataItems="{text:'work',value:'works'},{text:'study',value:'study'},{text:'weekly',value:'weekly'},{text:'D',value:'d'}">标签</td>  
-          <td width="103" bgcolor="#EFEFEF" Name="Datetime" EditType="TextBox">日期</td>  
-          <td width="120" bgcolor="#EFEFEF" Name="Height" EditType="TextBox">进度</td>  
+          <td width="40" bgcolor="#EFEFEF" Name="Id" EditType="TextBox">序号</td>  
+          <td width="120" bgcolor="#EFEFEF" Name="Name" EditType="TextBox"  >名称</td>  
+          <td width="80" bgcolor="#EFEFEF" Name="Tag"  EditType="DropDownList" DataItems="{text:'work',value:'work'},{text:'study',value:'study'},{text:'weekly',value:'weekly'},{text:'relax',value:'relax'}">标签</td>  
+          <td width="80" bgcolor="#EFEFEF" Name="Datetime" EditType="TextBox">日期</td>  
+          <td width="50" bgcolor="#EFEFEF" Name="Height" EditType="TextBox">进度</td>  
           <!-- <td width="120" bgcolor="#EFEFEF" Name="Height" Expression="Amount*Price" Format="#,###.00">进度</td>   -->
         </tr>  
         <tr>  
@@ -375,11 +379,17 @@
     <input type="button" name="Submit" value="新增" onclick="AddRow(document.getElementById('tabProduct'),1)" />  
     <input type="button" name="Submit2" value="删除" onclick="DeleteRow(document.getElementById('tabProduct'),1)" />  
     <input type="button" name="Submit22" value="重置" onclick="window.location.reload()" />  
-    <input type="submit" name="Submit3" value="提交" onclick="GetTableData(document.getElementById('tabProduct'));return false;" />  
-    <input type="submit" name="SubmitPrint" value="打印" onclick="GetTableData(document.getElementById('tabProduct'));return false;" />  
-    </form>  
-      
-   
+    <input type="button" name="Submit3" value="提交" onclick="commitTable()" />  
+    <input type="button" name="SubmitDownload" value="下载" onclick="downloadJson(dat)" />  
+    <input type="button" name="SubmitPrint" value="打印" onclick="console.log(dat);" />  
+    <br>
+    <input type="button" name="SubmitFilter" value="筛选" onclick="var datFlt=(dat.filter(checkHeight)); tableDisp(datFlt);fltFlag= true;" /> 
+    <input type="button" name="SubmitFilter" value="筛选2" onclick="var datFlt=(dat.filter(checkWork)); tableDisp(datFlt);fltFlag= true;" /> 
+    <input type="button" name="SubmitUnfilter" value="返回" onclick="tableDisp(dat);fltFlag= false;" /> 
+    <br> 
+    <input type="file" id="files"/>
+    <input type="button" name="SubmitLoader" value="加载" onclick="handleFiles()" /> 
+   </form>  
     <script language="javascript">  
         var tabProduct = document.getElementById("tabProduct");  
         
@@ -388,28 +398,94 @@
         EditTables(tabProduct);  
 
         var dat = [{
-        "Id":"1",
-        "Name": "小明1",
-        "Datetime": "6",
-        "Tag": "weekly",
-        "Height": "60"
-    }, {
-        "Id":"2",
-        "Name": "小明2",
-        "Datetime": "7",
-        "Tag": "work",
-        "Height": "70"
-    }, {
-        "Id":"3",
-        "Name": "小明3",
-        "Datetime": "8",
-        "Tag": "study",
-        "Height": "80"
-    }];
+            "Id":"3",
+            "Name": "小明1",
+            "Datetime": "6",
+            "Tag": "weekly",
+            "Height": "60"
+        }, {
+            "Id":"4",
+            "Name": "小明2",
+            "Datetime": "7",
+            "Tag": "work",
+            "Height": "70"
+        }, {
+            "Id":"5",
+            "Name": "小明3",
+            "Datetime": "8",
+            "Tag": "study",
+            "Height": "80"
+        }];
+        var idMax = 2
+        var fltFlag = false;
+        function checkHeight(xx) {
+            return parseInt(xx.Height) >= 100;
+        }
+        function checkWork(xx) {
+            return xx.Tag == "work";
+        }  
+        function formatDate(time){
+            var date = new Date(time);
+
+            var year = date.getFullYear(),
+                month = date.getMonth()+1,//月份是从0开始的
+                day = date.getDate(),
+                hour = date.getHours(),
+                min = date.getMinutes(),
+                sec = date.getSeconds();
+            var newTime = year + '-' +
+                        (month < 10? '0' + month : month) + '-' +
+                        (day < 10? '0' + day : day) + ' ' +
+                        (hour < 10? '0' + hour : hour) + ':' +
+                        (min < 10? '0' + min : min) + ':' +
+                        (sec < 10? '0' + sec : sec);
+
+            return newTime;         
+        }
+        function commitTable(){
+            if (fltFlag){
+                updateDat(dat, GetTableData(document.getElementById('tabProduct')) )
+            }else{
+                dat = GetTableData(document.getElementById('tabProduct'))
+            }
+            
+        }
+        //formatDate(new Date().getTime());//2017-05-12 09:09:21
+        function handleFiles() {
+            var selectedFile = document.getElementById("files").files[0];//获取读取的File对象
+            var name = selectedFile.name;//读取选中文件的文件名
+            var size = selectedFile.size;//读取选中文件的大小
+            console.log("文件名:"+name+"大小："+size);
+            var reader = new FileReader();//这里是核心！！！读取操作就是由它完成的。
+            reader.readAsText(selectedFile);//读取文件的内容
+    
+            reader.onload = function(){
+                console.log("读取结果：", this.result);//当读取完成之后会回调这个函数，然后此时文件的内容存储到了result中。直接操作即可。
+    
+                console.log("读取结果转为JSON：");
+                let json = JSON.parse(this.result);
+                console.log(json);
+                console.log(json[0].Name,json[0].Id);
+                tableDisp(json)
+                dat = json
+            };
+    
+        }
+        function updateDat(dt,upd){
+            for(var i=upd.length-1;i>=0;i--){
+                for(var j = dt.length-1;j>=0;j--){
+                    if (upd[i].id ==  dt[j].id ){
+                        dt[j] = upd[i]
+                        break
+                    }
+                }
+
+            }
+        }
         // 导出生成json文件
         function downloadJson(data) {
             var blob = new Blob([JSON.stringify(data)], { type: "" });
-            saveAs(blob, "abc\\hello.json");
+            saveAs(blob, "hello.json");
         }
         // 导出生成文本
         function downloadText(data) {
@@ -418,12 +494,23 @@
         }
         function tableDisp(data){
             var table=document.getElementById("tabProduct");
+            table.deleteTFoot()
+            for(var i=table.rows.length-1;i>0;i--){
+                table.deleteRow( i)
+            }
             for(var i=0;i<data.length;i++){
                 var row=table.insertRow(table.rows.length);
                 var c1=row.insertCell(0);
                 c1.innerHTML=data[i].Id;
+                // data[i].setAttribute("EditState", "true"); 
+                // <td width="32" align="center" bgcolor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
+                c1.innerHTML="<input type='checkbox' name='checkbox22' value='checkbox'>"
+                c1.align = "<td align='center' bgcolor='#FFFFFF'>"
                 var c2=row.insertCell(1);
                 c2.innerHTML=data[i].Id;
+                // idMax
+                idMax = Math.max( idMax , parseInt(data[i].Id))
+                
                 var c3=row.insertCell(2);
                 c3.innerHTML=data[i].Name;
                 var c4=row.insertCell(3);
@@ -432,11 +519,13 @@
                 c5.innerHTML=data[i].Datetime;
                 var c5=row.insertCell(5);
                 c5.innerHTML=data[i].Height;
+                SetRowCanEdit(row)
                 
             }
         }
+        
         window.onload=function(){ 
-            tableDisp(dat)
+            tableDisp(dat)            
         }
 
     </script>  
