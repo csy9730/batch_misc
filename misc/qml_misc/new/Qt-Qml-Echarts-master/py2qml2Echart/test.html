@@ -4,11 +4,29 @@
     <meta charset="utf-8">
     <title>ECharts</title>
     <!-- 引入 echarts.js -->
-    <script src="echarts.js"></script>
+    <script src="../js/echarts.js"></script>
+	<script src="../js/jquery-1.7.2.js"></script>
+	<script type="text/javascript" src="../js/qwebchannel.js"></script>
+
 </head>
 <body>
     <div id="main" style="width: 600px;height:400px;"></div>
     <script type="text/javascript">
+		window.onload = function() {
+			new QWebChannel(qt.webChannelTransport, function (channel) {
+				// 此处channel.objects.printer中的printer就是上文提到的功能类注册的标识名
+				window.backend= channel.objects.backend;  
+				window.backend.someSignal.connect(function(st) {
+					option.series[0].data.push(parseFloat(st))
+					option.xAxis.data.push("abc")					
+					
+					var dt=option.series[0].data
+					alert(dt)
+					myChart.setOption(option);
+					//document.getElementById('output').value = st
+				});
+			});
+		};
         // 基于准备好的dom，初始化echarts实例
         var myChart = echarts.init(document.getElementById('main'));
 
@@ -34,6 +52,8 @@
 
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
+		
+
     </script>
 </body>
 </html>
