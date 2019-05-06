@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
     app = QGuiApplication(sys.argv)
 
-    qmlRegisterType(PieChart, "Charts", 1, 0, "PieChart")
+    qmlRegisterType(PieChart, "Charts", 1, 0, "PieChart2")
 
     view = QQuickView()
     view.setResizeMode(QQuickView.SizeRootObjectToView)
