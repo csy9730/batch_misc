@@ -1,1 +1,0 @@
-pyrcc5 -o rApp_rc.py rApp.qrc

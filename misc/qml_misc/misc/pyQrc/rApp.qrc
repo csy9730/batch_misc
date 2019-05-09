@@ -1,9 +1,0 @@
-<RCC>
-    <qresource prefix="/">
-        <file>eApp.qml</file>  
-        <file>res/eRect.qml</file>
-		 <file>res/eItem.qml</file>	
-		 <file>res/eApp2.qml</file>	
-		<file>res/demobg.png</file>
-    </qresource>
-</RCC>

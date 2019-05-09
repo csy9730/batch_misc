@@ -1,1 +1,0 @@
-python %~dp0eQmlTest4.py

@@ -1,1 +1,0 @@
-python ePyQt.py %*
