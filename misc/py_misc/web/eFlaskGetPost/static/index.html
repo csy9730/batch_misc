@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+<div class="user">
+    <input type="text" name="user">
+    <input type="button" id="submit" value="提交">
+	<br>
+    <input type="button" id="getData" value="获取">	
+    <br>
+    <textarea id=txt2 cols=45>ta</textarea>
+    <label id="txt">lab</label>
+</div>
+<!--  <script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.11.3.min.js"></script>-->
+<script src="static/js/jquery.js"></script>
+
+<script>
+
+    /*  	get请求
+	*/
+	$('input[id=getData]').click(function () {
+        console.log("get begin");
+		$.ajax({
+			url:'http://localhost:8800/course',
+			type:'get',
+			dataType:'json',
+			success:function (data) {
+
+			   console.log("data=",data);
+	            //var a = JSON.parse(data);
+	            //console.log(a);
+	            var str_pretty1 = JSON.stringify(data);
+                console.log(str_pretty1)
+                //$('textarea[id=txt2]').innerText = "abc"//data
+                document.getElementById("txt2").innerText= str_pretty1 ;
+                document.getElementById("txt2").rows= data.length ;
+			},
+			error:function () {
+				console.log("get error");
+			}
+		})
+	})
+
+    // post请求
+    $('input[id=submit]').click(function () {
+
+        $.ajax({
+            url: "http://127.0.0.1:8800/create",
+            type: 'post',
+            data: {
+                name: $('input[type=text]').val()
+            },
+            success: function (data) {
+                console.log(data);
+            }
+        })
+    })
+
+</script>
+</body>
+</html>

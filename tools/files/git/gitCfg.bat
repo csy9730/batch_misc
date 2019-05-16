@@ -3,7 +3,7 @@ git config --global user.email  hanmeimei@abc.cn
 git config --global core.autocrlf false
 git config --global core.safecrlf false
 git config --global core.quotepath false
-
+# C:\Users\admin\.gitconfig
 ssh-keygen -t rsa -b 4096
 
 pause
