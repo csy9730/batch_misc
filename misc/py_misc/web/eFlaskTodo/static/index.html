@@ -20,10 +20,11 @@
                     <option value="work" selected=True>work</option>
                     <option value="weekly">weekly</option>
                     <option value="study">study</option>
-        </select><br> 
-
+                    <option value="relax">relax</option>                  
+        </select>
         <!--label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="text" id="TagInput"name="Tag"><br> -->
-        <label>Height&nbsp;&nbsp;</label><input type="number" value=0 id="HeightInput" name="Height" min=0 max=100 ><br>        
+        <label>Height&nbsp;&nbsp;</label><input type="number" value=0 id="HeightInput" name="Height" min=0 max=100 ><br> 
+        <textarea  name="Txt" id="TxtInput" ></textarea>       
         </form>
 
     <br>
@@ -31,14 +32,13 @@
     <input type="button" id="popTodo" value="pop">
     <br>
     <input type="button" id="filtTime" value="filter">
-    <input type="button" name="SubmitFilter" value="筛选" onclick="var datFlt=(gDat.filter(checkHeight)); tableDisp(datFlt);fltFlag= true;" /> 
-    <input type="button" name="SubmitFilter" value="筛选work" onclick="var datFlt=(gDat.filter(checkWork)); tableDisp(datFlt);fltFlag= true;" /> 
     <select id="tagCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
             　　<option value="All" selected=True>All</option>
                 <option value="work" >work</option>
                 <option value="study" >study</option>  
                 <option value="weekly" >weekly</option>   
-                <option value="random">random</option>                       
+                <option value="random">random</option>  
+                <option value="relax">relax</option>                       
     </select>
     <select id="timeCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
             　　<option value="All" selected=True>All</option>
@@ -49,9 +49,9 @@
     </select> 
     <select id="heightCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
             　　<option value="All" selected=True>All</option>
-                <option value="0" >Unfinished</option>
-                <option value="1" >Running</option>
-                <option value="99" >Finished</option>
+                <option value="0" >Running</option>
+                <option value="90" >Suspend</option>
+                <option value="100" >Finished</option>
     </select>
 
     <br>
@@ -62,23 +62,25 @@
 
 </div>
     <h3>可编辑的表格</h3>  
-    <table width="698" border="0" cellpadding="0" cellspacing="0" id="tabProduct">  
+    <table width="800" border="0" cellpadding="0" cellspacing="0" id="tabProduct">  
         <tr>  
-            <td width="32" align="center" bgcolor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
-            <td width="40" bgcolor="#EFEFEF" Name="Id" EditType="TextBox">序号</td>  
-            <td width="120" bgcolor="#EFEFEF" Name="Name" EditType="TextBox"  >名称</td>  
-            <td width="80" bgcolor="#EFEFEF" Name="Tag"  EditType="DropDownList" DataItems="{text:'work',value:'work'},{text:'study',value:'study'},{text:'weekly',value:'weekly'},{text:'relax',value:'relax'}">标签</td>  
-            <td width="80" bgcolor="#EFEFEF" Name="Datetime" EditType="TextBox">日期</td>  
-            <td width="50" bgcolor="#EFEFEF" Name="Height" EditType="TextBox">进度</td>  
+            <td width="32" align="center" bgColor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
+            <td width="40" bgColor="#EFEFEF" Name="Id" EditType="TextBox">序号</td>  
+            <td width="120" bgColor="#EFEFEF" Name="Name" EditType="TextBox"  >名称</td>  
+            <td width="80" bgColor="#EFEFEF" Name="Tag"  EditType="DropDownList" DataItems="{text:'work',value:'work'},{text:'study',value:'study'},{text:'weekly',value:'weekly'},{text:'relax',value:'relax'}">标签</td>  
+            <td width="100" bgColor="#EFEFEF" Name="Datetime" EditType="TextBox">日期</td>  
+            <td width="50" bgColor="#EFEFEF" Name="Height" EditType="TextBox">进度</td>  
+            <td width="150" bgColor="#EFEFEF" Name="Txt" EditType="TextBox">文本</td>              
             <!-- <td width="120" bgcolor="#EFEFEF" Name="Height" Expression="Amount*Price" Format="#,###.00">进度</td>   -->
         </tr>  
         <tr>  
-            <td align="center" bgcolor="#FFFFFF"><input type="checkbox" name="checkbox2" value="checkbox" /></td>  
-            <td bgcolor="#FFFFFF">1</td>  
-            <td bgcolor="#FFFFFF" >0</td>  
-            <td bgcolor="#FFFFFF" Value="weekly">0</td>  
-            <td bgcolor="#FFFFFF">0</td>  
-            <td bgcolor="#FFFFFF">0</td>  
+            <td align="center" bgColor="#FFFFFF"><input type="checkbox" name="checkbox2" value="checkbox" /></td>  
+            <td bgColor="#FFFFFF">1</td>  
+            <td bgColor="#FFFFFF" >0</td>  
+            <td bgColor="#FFFFFF" Value="weekly">0</td>  
+            <td bgColor="#FFFFFF">0</td>  
+            <td bgColor="#FFFFFF">0</td>  
+            <td bgColor="#FFFFFF">0</td>            
         </tr>  
     </table> 
 <!--       <textarea id=txt2 cols=45>ta</textarea>
@@ -114,6 +116,7 @@
         //document.getElementById('TagInput').value= '';
         $("#TagInput").val('')  
         document.getElementById('HeightInput').value= 0; 
+        document.getElementById('TxtInput').value= ""; 
         
     }
     $('input[id=newTodo]').click(function (){
@@ -122,6 +125,7 @@
         document.getElementById('TimeInput').value=formatDate(new Date().getTime());
         $("#TagInput").val('work')  
         document.getElementById('HeightInput').value= 0; 
+        document.getElementById('TxtInput').value= ""; 
         //$('input[name=Id]').value = 5
         //$('input[id=TimeInput]').value = formatDate(new Date().getTime())
         //$('input[id=TagInput]').value = 'work'
@@ -137,6 +141,7 @@
                     document.getElementById('TimeInput').value = gDat[i].Datetime;
                     $("#TagInput").val(gDat[i].Tag)  
                     document.getElementById('HeightInput').value= parseInt(gDat[i].Height); 
+                    document.getElementById('TxtInput').value = gDat[i].Txt;
                     console.log("pop")
                     break;
                 }
@@ -188,7 +193,10 @@
                 Tag:  $("#TagInput").val(),// $('input[name=Tag]').val(),
                 //tagList[$("#TagInput ").get(0).selectedIndex],
                 // $("#TagInput").find("option:selected").text(),
-                Height: $('input[name=Height]').val()         
+                Height: $('input[name=Height]').val(),
+                //Txt: $('input[name=Txt]').Text(),  
+                Txt: document.getElementById('TxtInput').value,
+                Misc: formatDate(new Date().getTime()),                      
             }
         if (dt.Name=='' || dt.Id== 0){
             alert('input none');
@@ -226,9 +234,7 @@
         })
     })
 
-    function checkHeight(xx) {
-            return parseInt(xx.Height) >= 100;
-    }
+
     function checkWork(xx) {
         return xx.Tag == "work";
     }  
@@ -245,11 +251,11 @@
     function checkHeightMux(xx) {
         var h = $("#heightCombo").val()
         if (h=="0"){
-            return xx.Height == 0;
-        }else if(h=="99"){
-            return xx.Height >=99;
-        }else if(h=="1"){
-            return xx.Height >0 &&  xx.Height <99;
+            return (xx.Height >= 0)&&( xx.Height<90);
+        }else if(h=="100"){
+            return xx.Height >=96;
+        }else if(h=="90"){
+            return xx.Height >=90 &&  xx.Height <96;
         }
         return true;
     }  
@@ -271,7 +277,17 @@
         var datFlt=filtDat(gDat);
         tableDisp(datFlt);
     })
-
+    function tag2Color(Tag){
+        if (Tag=="work")
+                bgColor='#FF0000';
+            else if( Tag=="study")
+                bgColor='#0000FF';
+            else if( Tag=="weekly")
+                bgColor='#00FFFF';  
+            else
+                bgColor='#00FF00';
+            return bgColor;
+    }
     function tableDisp(data){
         var table=document.getElementById("tabProduct");
         table.deleteTFoot()
@@ -284,9 +300,9 @@
             c1.innerHTML=data[i].Id;
             console.log( data[i].Id ,data[i].Tag)
             // data[i].setAttribute("EditState", "true"); 
-            // <td width="32" align="center" bgcolor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
+            // <td width="32" align="center" bgColor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
             c1.innerHTML="<input type='checkbox' name='checkbox22' value='checkbox'>"
-            c1.align = "<td align='center' bgcolor='#FFFFFF'>"
+            c1.align = "<td align='center' bgColor='#FFFFFF'>"
             var c2=row.insertCell(1);
             c2.innerHTML=data[i].Id;            
             var c3=row.insertCell(2);
@@ -295,8 +311,12 @@
             c4.innerHTML=data[i].Tag;
             var c5=row.insertCell(4);
             c5.innerHTML=data[i].Datetime;
-            var c5=row.insertCell(5);
+            var c5=row.insertCell(5);   
             c5.innerHTML=data[i].Height;
+            var c6=row.insertCell(6);
+            c6.innerHTML=data[i].Txt;
+            row.bgColor= tag2Color( data[i].Tag   );
+
             // SetRowCanEdit(row)  
         }
     }

@@ -37,19 +37,25 @@ def courses():
             "Name": "小明1",
             "Datetime": "6",
             "Tag": "weekly",
-            "Height": "60"
+            "Height": "60",
+            "Txt":"",
+            "Misc":"",        
         }, {
             "Id":"4",
             "Name": "小雷",
             "Datetime": "7",
             "Tag": "work",
-            "Height": "70"
+            "Height": "70",
+            "Txt":"",
+            "Misc":"",       
         }, {
             "Id":"5",
             "Name": "小红",
             "Datetime": "8",
             "Tag": "study",
-            "Height": "80"
+            "Height": "80",
+            "Txt":"",
+            "Misc":"",       
         }]
 
 
@@ -77,10 +83,14 @@ def create():
         "Datetime": request.form.get('Datetime'),
         "Tag": request.form.get('Tag'),
         "Height": request.form.get('Height'),
+        "Txt": request.form.get('Txt'),
+        "Misc": request.form.get('Misc'),
     }
+
     for i in range(len(data)):
         if data[i]["Id"] == dt["Id"]:
             print("del ",data[i])
+            dt["Misc"]=data[i]["Misc"]+dt["Misc"]+";"
             del data[i]
             break
     data.append(dt)
