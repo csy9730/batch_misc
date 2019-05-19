@@ -1,0 +1,34 @@
+<script src="../static/js/jquery.js"></script>
+<body>
+    <div>
+    <select id="slt" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
+    　　<option value="管理员">管理员</option>
+        <option value="普通用户">普通用户</option>
+        <option value="本科">本科</option>
+        <option value="硕士研究生">硕士研究生</option>
+        <option value="博士研究生">博士研究生</option>
+        <option value="教职工">教职工</option>
+    </select>
+    </div>
+    <span id="up" hidden="hidden">${requestScope.leaguer.leaguerPower}</span>
+    <button id=getBtn>get</button>
+    <button id=setBtn>set</button>
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        //var x = document.getElementById("up").innerHTML;/* 如果你用的“变量”是input的话，这里就要写成.value了 */
+        //$("#slt").val(x);/* 这句话设置select中value为x的项被选中,例如$("#slt").val(“本科”)就表示<option>本科</option>被选中*/
+    });
+
+    $('button[id=setBtn]').click(function (){
+        console.log("setbtn")
+        $("#slt").val("本科")
+    })
+    $('button[id=getBtn]').click(function (){
+        console.log("getbtn")
+        /* 如果你用的“变量”是input的话，这里就要写成.value了 */
+        console.log("val=", $("#slt").val() )
+    })
+
+</script>
+</body>

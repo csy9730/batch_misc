@@ -53,7 +53,7 @@
                 <option value="90" >Suspend</option>
                 <option value="100" >Finished</option>
     </select>
-
+    <input type="text" id="nameFilterInput" /><br>
     <br>
     <input type="button" id="getData" value="获取" style="padding-right:30px;">	
     <input type="button" id="submit" value="提交" style="padding-right:30px;">
@@ -259,6 +259,10 @@
         }
         return true;
     }  
+    function checkExistName(xx) {
+        return  xx.Name.indexOf(   $("#nameFilterInput").val() )>-1
+    } 
+    
     function filtDat(data){
         var datFlt=data;
         //console.log( $("#tagCombo").val(),$("#timeCombo").val() ,$("#heightCombo").val()  )
@@ -270,6 +274,9 @@
         }
         if ( $("#heightCombo").val()  !="All"){
             datFlt =datFlt.filter(checkHeightMux);
+        }
+        if ( $("#nameFilterInput").val()  !=""){
+            datFlt =datFlt.filter(checkExistName);
         }
         return datFlt
     }
@@ -302,7 +309,7 @@
             // data[i].setAttribute("EditState", "true"); 
             // <td width="32" align="center" bgColor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
             c1.innerHTML="<input type='checkbox' name='checkbox22' value='checkbox'>"
-            c1.align = "<td align='center' bgColor='#FFFFFF'>"
+            c1.align = "center" 
             var c2=row.insertCell(1);
             c2.innerHTML=data[i].Id;            
             var c3=row.insertCell(2);
@@ -315,7 +322,9 @@
             c5.innerHTML=data[i].Height;
             var c6=row.insertCell(6);
             c6.innerHTML=data[i].Txt;
-            row.bgColor= tag2Color( data[i].Tag   );
+            //row.bgColor= tag2Color( data[i].Tag   );
+            row.style = "color:"+tag2Color( data[i].Tag   );
+
 
             // SetRowCanEdit(row)  
         }

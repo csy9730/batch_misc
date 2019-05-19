@@ -110,7 +110,7 @@ def create():
 # 定义路由
 @app.route("/delete", methods=["post", ])
 def delete():
-    print(request.form.get('name'))
+    print(request.form.get('Name'))
     # 读取todo.json中的原始的数据
     with open("todo.json", "r") as f:
         # 将数据反序列化
