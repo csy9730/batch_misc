@@ -20,7 +20,10 @@
                     <option value="work" selected=True>work</option>
                     <option value="weekly">weekly</option>
                     <option value="study">study</option>
-                    <option value="relax">relax</option>                  
+                    <option value="relax">relax</option>  
+                    <option value="self">self</option> 
+                    <option value="keyword">keyword</option> 
+                    <option value="others">others</option>                         
         </select>
         <!--label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="text" id="TagInput"name="Tag"><br> -->
         <label>Height&nbsp;&nbsp;</label><input type="number" value=0 id="HeightInput" name="Height" min=0 max=100 ><br> 
@@ -38,7 +41,10 @@
                 <option value="study" >study</option>  
                 <option value="weekly" >weekly</option>   
                 <option value="random">random</option>  
-                <option value="relax">relax</option>                       
+                <option value="relax">relax</option>
+                <option value="self">self</option> 
+                <option value="keyword">keyword</option> 
+                <option value="others">others</option>                                                              
     </select>
     <select id="timeCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
             　　<option value="All" selected=True>All</option>
@@ -54,6 +60,7 @@
                 <option value="100" >Finished</option>
     </select>
     <input type="text" id="nameFilterInput" /><br>
+    <input type="button" id="sortBtn" value="sorts">
     <br>
     <input type="button" id="getData" value="获取" style="padding-right:30px;">	
     <input type="button" id="submit" value="提交" style="padding-right:30px;">
@@ -132,7 +139,7 @@
        // $('input[id=HeightInput]').value = 0
     })
     $('input[id=popTodo]').click(function (){
-        var id = document.getElementById('idInput').value
+        var id = parseInt(document.getElementById('idInput').value)
         if ( id >0) {
             for (var i=0;i<gDat.length;i++){
                 if (gDat[i].Id == id){
@@ -260,7 +267,7 @@
         return true;
     }  
     function checkExistName(xx) {
-        return  xx.Name.indexOf(   $("#nameFilterInput").val() )>-1
+        return  xx.Name.toUpperCase().indexOf(   $("#nameFilterInput").val().toUpperCase() )>-1
     } 
     
     function filtDat(data){
