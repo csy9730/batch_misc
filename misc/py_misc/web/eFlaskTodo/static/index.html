@@ -16,7 +16,6 @@
         <label>Datetime</label><input type="text" id="TimeInput" name="Datetime"><br>
         <label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
         <select id="TagInput" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
-                　　<option value="random">random</option>
                     <option value="work" selected=True>work</option>
                     <option value="weekly">weekly</option>
                     <option value="study">study</option>
@@ -40,7 +39,6 @@
                 <option value="work" >work</option>
                 <option value="study" >study</option>  
                 <option value="weekly" >weekly</option>   
-                <option value="random">random</option>  
                 <option value="relax">relax</option>
                 <option value="self">self</option> 
                 <option value="keyword">keyword</option> 
@@ -61,6 +59,20 @@
     </select>
     <input type="text" id="nameFilterInput" /><br>
     <input type="button" id="sortBtn" value="sorts">
+    <select id="sortCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
+        　　<option value="idDescend" >idDescend</option>
+            <option value="TagAscend">TagAscend</option>        
+            <option value="heightAscend">heightAscend</option>
+            <option value="visitRecent" selected=True>visitRecent</option>
+    </select>
+    <input type="button" id="history" value="历史" style="padding-right:30px;">
+    <select id="reverseCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">     
+            <option value="default" selected=True>default</option>
+            <option value="reverse">reverse</option>
+    </select>
+    <input type="button" id="history" value="历史" style="padding-right:30px;">
+
+</select> 
     <br>
     <input type="button" id="getData" value="获取" style="padding-right:30px;">	
     <input type="button" id="submit" value="提交" style="padding-right:30px;">
@@ -144,6 +156,7 @@
             for (var i=0;i<gDat.length;i++){
                 if (gDat[i].Id == id){
                     console.log(gDat[i])
+                    document.getElementById('idInput').value= id ;
                     document.getElementById('NameInput').value= gDat[i].Name ;
                     document.getElementById('TimeInput').value = gDat[i].Datetime;
                     $("#TagInput").val(gDat[i].Tag)  
@@ -158,7 +171,41 @@
             return ;
         }
     })
-    
+    function cmpId(a,b){
+        return a.Id- b.Id
+    }
+    function cmpDate(a,b){
+        return Date(a.Datetime) - Date(b.Datetime)
+    }
+    function cmpHeight(a,b){
+        return a.Height- b.Height
+    }
+    function cmpTag(a,b){
+        // const tagArr="workstudyselfweekly"
+        return a.Tag.localeCompare(b.Tag)
+    }
+    function sortedDat(datFlt){
+        if ( $("#sortCombo").val()  =="idDescend"){
+            datFltSt = datFlt.sort(cmpId);
+        }else if ( $("#sortCombo").val()  =="heightAscend"){
+            datFltSt = datFlt.sort(cmpHeight);
+        }else if ( $("#sortCombo").val()  =="TagAscend"){
+            datFltSt = datFlt.sort(cmpTag);
+        }else{
+            datFltSt = datFlt;
+        }
+        if ( $("#reverseCombo").val()  =="reverse" ){
+            return datFltSt.reverse();
+        };
+        return datFltSt
+    }
+    $('input[id=sortBtn]').click(function (){
+        console.log("sort",)
+        var datFlt=filtDat(gDat);
+        var datFltSt = sortedDat(datFlt)
+        console.log("sort==",datFltSt) 
+        tableDisp(datFltSt);
+    })
     function showJson(data){
         //var a = JSON.parse(data);
         var gDat = JSON.stringify(data);
@@ -194,13 +241,13 @@
     // post请求
     $('input[id=submit]').click(function () {
         var dt = {
-                Id: $('input[name=Id]').val(),
+                Id: parseInt($('input[name=Id]').val()),
                 Name: $('input[name=Name]').val(),
                 Datetime: $('input[name=Datetime]').val(),
                 Tag:  $("#TagInput").val(),// $('input[name=Tag]').val(),
                 //tagList[$("#TagInput ").get(0).selectedIndex],
                 // $("#TagInput").find("option:selected").text(),
-                Height: $('input[name=Height]').val(),
+                Height: parseInt($('input[name=Height]').val()),
                 //Txt: $('input[name=Txt]').Text(),  
                 Txt: document.getElementById('TxtInput').value,
                 Misc: formatDate(new Date().getTime()),                      
@@ -219,7 +266,7 @@
                 clearInput()
                 console.log("post=",data);
                 gDat.push(dt)
-                tableDisp(filtDat(gDat))
+                tableDisp(sortedDat(filtDat(gDat)))
             },
             error:function () {
                 console.log("get error");
@@ -272,10 +319,8 @@
     
     function filtDat(data){
         var datFlt=data;
-        //console.log( $("#tagCombo").val(),$("#timeCombo").val() ,$("#heightCombo").val()  )
-        if ( $("#tagCombo").val()  !="All"){
-            datFlt =datFlt.filter(checkTag);
-        }
+        //console.log( $("#tagCombo").val(),$("#timeCombo").val() ,$("#heightCombo").val( )  )
+ 
         if ( $("#timeCombo").val()  !="All"){
             datFlt =datFlt.filter(checkTime);
         }
@@ -289,7 +334,8 @@
     }
     $('input[id=filtTime]').click(function () {
         var datFlt=filtDat(gDat);
-        tableDisp(datFlt);
+        var datFltSt = sortedDat(datFlt)
+        tableDisp(datFltSt);
     })
     function tag2Color(Tag){
         if (Tag=="work")

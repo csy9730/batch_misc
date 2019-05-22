@@ -25,8 +25,8 @@ def index():
 	return render_template('index.html')
 	# return resp
 
-with app.test_request_context():
-	print( url_for('static', filename='style.css'))
+# with app.test_request_context():
+# 	print( url_for('static', filename='style.css'))
 
 @app.route("/course")
 def courses():
@@ -60,6 +60,17 @@ def courses():
 
 
     with open("todo.json", "r") as f:
+        load_dict = json.load(f)
+    print(load_dict)
+    # 返回json序列化的数据
+    resp = Response(json.dumps(load_dict))
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+
+    return resp
+@app.route("/history")
+def history():
+    # 业务逻辑
+    with open("todoAll.jsonl", "r") as f:
         load_dict = json.load(f)
     print(load_dict)
     # 返回json序列化的数据
