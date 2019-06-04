@@ -65,18 +65,18 @@
             <option value="heightAscend">heightAscend</option>
             <option value="visitRecent" selected=True>visitRecent</option>
     </select>
-    <input type="button" id="history" value="历史" style="padding-right:30px;">
     <select id="reverseCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">     
             <option value="default" selected=True>default</option>
             <option value="reverse">reverse</option>
     </select>
-    <input type="button" id="history" value="历史" style="padding-right:30px;">
+    
 
 </select> 
     <br>
     <input type="button" id="getData" value="获取" style="padding-right:30px;">	
     <input type="button" id="submit" value="提交" style="padding-right:30px;">
     <input type="button" id="delData" value="删除">	
+    <input type="button" id="history" value="历史" style="padding-right:30px;">
     <br>
 
 </div>
@@ -200,7 +200,7 @@
         return datFltSt
     }
     $('input[id=sortBtn]').click(function (){
-        console.log("sort",)
+        console.log("sort")
         var datFlt=filtDat(gDat);
         var datFltSt = sortedDat(datFlt)
         console.log("sort==",datFltSt) 
@@ -225,7 +225,7 @@
                 for(var i=0;i<data.length;i++){
                     idMax= Math.max( parseInt(data[i].Id) +1 ,idMax );            
                 }  
-                tableDisp(filtDat(gDat))        
+                tableDisp(sortedDat(filtDat(gDat)) ) 
 			},
 			error:function () {
 				console.log("get error");
@@ -236,6 +236,29 @@
 	$('input[id=getData]').click(function (){
         console.log("get begin");
         getJson()
+    })
+/*  	get请求    */
+    function getJson2() {
+		$.ajax({
+			url:'http://localhost:8800/history',
+			type:'get',
+			dataType:'json',
+			success:function (data) {
+                gDat = data   
+                for(var i=0;i<data.length;i++){
+                    idMax= Math.max( parseInt(data[i].Id) +1 ,idMax );            
+                }  
+                tableDisp(sortedDat(filtDat(gDat)) ) 
+			},
+			error:function () {
+				console.log("get history error");
+			}
+		})
+    }
+    
+	$('input[id=history]').click(function (){
+        console.log("get history  begin");
+        getJson2()
     })
 
     // post请求

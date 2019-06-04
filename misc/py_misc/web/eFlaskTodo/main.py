@@ -31,47 +31,25 @@ def index():
 @app.route("/course")
 def courses():
     # 业务逻辑
-
-    load_dict =  [{
-            "Id":"3",
-            "Name": "小明1",
-            "Datetime": "6",
-            "Tag": "weekly",
-            "Height": "60",
-            "Txt":"",
-            "Misc":"",        
-        }, {
-            "Id":"4",
-            "Name": "小雷",
-            "Datetime": "7",
-            "Tag": "work",
-            "Height": "70",
-            "Txt":"",
-            "Misc":"",       
-        }, {
-            "Id":"5",
-            "Name": "小红",
-            "Datetime": "8",
-            "Tag": "study",
-            "Height": "80",
-            "Txt":"",
-            "Misc":"",       
-        }]
-
-
     with open("todo.json", "r") as f:
         load_dict = json.load(f)
     print(load_dict)
     # 返回json序列化的数据
     resp = Response(json.dumps(load_dict))
     resp.headers["Access-Control-Allow-Origin"] = "*"
-
     return resp
 @app.route("/history")
 def history():
-    # 业务逻辑
     with open("todoAll.jsonl", "r") as f:
-        load_dict = json.load(f)
+        while True:
+            text_line = f.readline()
+            if text_line:
+                print(type(text_line), text_line)
+                dct = json.loads(text_line)
+                #print(load_dict)
+                load_dict.append(dct)
+            else:
+                break
     print(load_dict)
     # 返回json序列化的数据
     resp = Response(json.dumps(load_dict))
@@ -138,5 +116,29 @@ def delete():
     return resp
 
 if __name__ == '__main__':
-
+    load_dict =  [{
+            "Id":"3",
+            "Name": "小明1",
+            "Datetime": "6",
+            "Tag": "weekly",
+            "Height": "60",
+            "Txt":"",
+            "Misc":"",        
+        }, {
+            "Id":"4",
+            "Name": "小雷",
+            "Datetime": "7",
+            "Tag": "work",
+            "Height": "70",
+            "Txt":"",
+            "Misc":"",       
+        }, {
+            "Id":"5",
+            "Name": "小红",
+            "Datetime": "8",
+            "Tag": "study",
+            "Height": "80",
+            "Txt":"",
+            "Misc":"",       
+        }]
     app.run(host="localhost", port=8800, )
