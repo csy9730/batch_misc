@@ -209,7 +209,7 @@
     function showJson(data){
         //var a = JSON.parse(data);
         var gDat = JSON.stringify(data);
-        console.log(gDatw)
+        console.log(gDat)
         //document.getElementById("txt2").innerText= str_pretty1 ;
        // document.getElementById("txt2").rows= data.length ;
     }
@@ -344,6 +344,9 @@
         var datFlt=data;
         //console.log( $("#tagCombo").val(),$("#timeCombo").val() ,$("#heightCombo").val( )  )
  
+        if ( $("#tagCombo").val()  !="All"){
+            datFlt =datFlt.filter(checkTag);
+        }
         if ( $("#timeCombo").val()  !="All"){
             datFlt =datFlt.filter(checkTime);
         }
