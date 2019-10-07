@@ -11,10 +11,67 @@ from flask import Response
 #创建实例化请求对象
 app = Flask(__name__)
 
-# print( url_for('static', filename='style.css'))
+class jobList(object):
+    def __init__(self,filename="todo.json"):
+        self.filename = filename
+        self.historyname = filename+'line'
+    def __dict__(self):
+        return dict()
+    def append(self,dt):
+        data = self.getList()
+        data.append(dt)
+        # 将此时最新的数据再次写入文件中
+        with open(self.filename, "w") as f:
+            f.write(json.dumps(data))
+        with open(self.historyname, "a+") as f:
+            f.write(json.dumps(dt))
+            f.write("\n")
+        return data
+    def delObj(self,obj):
+        data = self.getList()
+        del(data[-1])
+        # 将此时最新的数据再次写入文件中
+        with open(self.filename, "w") as f:
+            f.write(json.dumps(data))
+    def setObj(self,dt):
+        data = self.getList()
+        for i in range(len(data)):
+            if data[i]["Id"] == dt["Id"]:
+                print("del ",data[i])
+                dt["Misc"]=data[i]["Misc"]+dt["Misc"]+";"
+                del data[i]
+                break
+        data.append(dt)
+        # 将此时最新的数据再次写入文件中
+        with open(self.filename, "w") as f:
+            f.write(json.dumps(data))
+        with open(self.historyname, "a+") as f:
+            f.write(json.dumps(dt))
+            f.write("\n")
+        return data
+    def getList2(self):
+        load_dict = []
+        with open(self.historyname, "r") as f:
+            while True:
+                text_line = f.readline()
+                if text_line:
+                    print(type(text_line), text_line)
+                    dct = json.loads(text_line)
+                    #print(load_dict)
+                    load_dict.append(dct)
+                else:
+                    break
+        return load_dict
+    def getList(self):
+        with open(self.filename, "r") as f:
+            load_dict = json.load(f)
+        self.dat = load_dict
+        return load_dict
+cJob = jobList()
+
 # 定义路由
-@app.route("/")
 # 路由对应的函数处理
+@app.route("/")
 def index():
 	# 响应数据
 	resp = Response("<h2>首页</h2>")
@@ -30,42 +87,26 @@ def index():
 
 @app.route("/course")
 def courses():
-    # 业务逻辑
-    with open("todo.json", "r") as f:
-        load_dict = json.load(f)
+    load_dict = cJob.getList()
     print(load_dict)
-    # 返回json序列化的数据
     resp = Response(json.dumps(load_dict))
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 @app.route("/history")
 def history():
-    with open("todoAll.jsonl", "r") as f:
-        while True:
-            text_line = f.readline()
-            if text_line:
-                print(type(text_line), text_line)
-                dct = json.loads(text_line)
-                #print(load_dict)
-                load_dict.append(dct)
-            else:
-                break
+    load_dict = cJob.getList2()
     print(load_dict)
-    # 返回json序列化的数据
     resp = Response(json.dumps(load_dict))
     resp.headers["Access-Control-Allow-Origin"] = "*"
 
     return resp
 
-# 前端发送post请求
+# 前端发送ajax动态页面post,put请求,对应set&new
 # 定义路由
 @app.route("/create", methods=["post", ])
 def create():
     print(request.form.get('name'))
     # 读取todo.json中的原始的数据
-    with open("todo.json", "r") as f:
-        # 将数据反序列化
-        data = json.loads(f.read())
 
     dt = {"Id": request.form.get('Id'),
         "Name": request.form.get('Name'),
@@ -76,19 +117,7 @@ def create():
         "Misc": request.form.get('Misc'),
     }
 
-    for i in range(len(data)):
-        if data[i]["Id"] == dt["Id"]:
-            print("del ",data[i])
-            dt["Misc"]=data[i]["Misc"]+dt["Misc"]+";"
-            del data[i]
-            break
-    data.append(dt)
-    # 将此时最新的数据再次写入文件中
-    with open("todo.json", "w") as f:
-        f.write(json.dumps(data))
-    with open("todoAll.jsonl", "a+") as f:
-        f.write(json.dumps(dt))
-        f.write("\n")
+    data = cJob.setObj(dt)
     # 再次返回最新的数据 响应会前端
     resp = Response(json.dumps(data))
     resp.headers["Access-Control-Allow-Origin"] = "*"
@@ -100,16 +129,6 @@ def create():
 @app.route("/delete", methods=["post", ])
 def delete():
     print(request.form.get('Name'))
-    # 读取todo.json中的原始的数据
-    with open("todo.json", "r") as f:
-        # 将数据反序列化
-        data = json.loads(f.read())
-    # 将新数据添加到原始的数据中
-    # data.append({"name": request.form.get('name')})
-    del(data[-1])
-    # 将此时最新的数据再次写入文件中
-    with open("todo.json", "w") as f:
-        f.write(json.dumps(data))
     # 再次返回最新的数据 响应会前端
     resp = Response(json.dumps(data))
     resp.headers["Access-Control-Allow-Origin"] = "*"

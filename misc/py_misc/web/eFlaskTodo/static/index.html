@@ -11,7 +11,7 @@
     
 <div >
     <form>
-        <label >Id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="number" id="idInput" name="Id" min=0 /><br>
+        <label>Id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="number" id="idInput" name="Id" min=0 /><br>
         <label>Name&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="text" id="NameInput" name="Name"><br>
         <label>Datetime</label><input type="text" id="TimeInput" name="Datetime"><br>
         <label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
@@ -26,12 +26,13 @@
         </select>
         <!--label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="text" id="TagInput"name="Tag"><br> -->
         <label>Height&nbsp;&nbsp;</label><input type="number" value=0 id="HeightInput" name="Height" min=0 max=100 ><br> 
-        <textarea  name="Txt" id="TxtInput" ></textarea>       
-        </form>
+        <textarea  name="Txt" id="TxtInput" placeholder="补充描述" ></textarea>       
+    </form>
 
     <br>
     <input type="button" id="newTodo" value="new" style="padding-right:30px;">
     <input type="button" id="popTodo" value="pop">
+    <input type="button" id="delData" value="删除">	
     <br>
     <input type="button" id="filtTime" value="filter">
     <select id="tagCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
@@ -75,22 +76,24 @@
     <br>
     <input type="button" id="getData" value="获取" style="padding-right:30px;">	
     <input type="button" id="submit" value="提交" style="padding-right:30px;">
-    <input type="button" id="delData" value="删除">	
+    
     <input type="button" id="history" value="历史" style="padding-right:30px;">
     <br>
 
 </div>
-    <h3>可编辑的表格</h3>  
+    <h3>任务表格</h3>  
     <table width="800" border="0" cellpadding="0" cellspacing="0" id="tabProduct">  
         <tr>  
             <td width="32" align="center" bgColor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
             <td width="40" bgColor="#EFEFEF" Name="Id" EditType="TextBox">序号</td>  
-            <td width="120" bgColor="#EFEFEF" Name="Name" EditType="TextBox"  >名称</td>  
+            <td width="80" bgColor="#EFEFEF" Name="Name" EditType="TextBox"  >名称</td>  
             <td width="80" bgColor="#EFEFEF" Name="Tag"  EditType="DropDownList" DataItems="{text:'work',value:'work'},{text:'study',value:'study'},{text:'weekly',value:'weekly'},{text:'relax',value:'relax'}">标签</td>  
             <td width="100" bgColor="#EFEFEF" Name="Datetime" EditType="TextBox">日期</td>  
             <td width="50" bgColor="#EFEFEF" Name="Height" EditType="TextBox">进度</td>  
             <td width="150" bgColor="#EFEFEF" Name="Txt" EditType="TextBox">文本</td>              
             <!-- <td width="120" bgcolor="#EFEFEF" Name="Height" Expression="Amount*Price" Format="#,###.00">进度</td>   -->
+            
+
         </tr>  
         <tr>  
             <td align="center" bgColor="#FFFFFF"><input type="checkbox" name="checkbox2" value="checkbox" /></td>  
@@ -128,6 +131,9 @@
 
         return newTime;         
     }
+
+
+
     function clearInput(){
         document.getElementById('idInput').value= 0;
         document.getElementById('NameInput').value= '';       
@@ -150,22 +156,27 @@
         //$('input[id=TagInput]').value = 'work'
        // $('input[id=HeightInput]').value = 0
     })
+
+    function popIdToLinebox(idx){
+        document.getElementById('idInput').value= gDat[idx].Id ;
+        document.getElementById('NameInput').value= gDat[idx].Name ;
+        document.getElementById('TimeInput').value = gDat[idx].Datetime;
+        $("#TagInput").val(gDat[idx].Tag)  
+        document.getElementById('HeightInput').value= parseInt(gDat[idx].Height); 
+        document.getElementById('TxtInput').value = gDat[idx].Txt;
+    }
+    function idToIndex(id){
+        for (var i=0;i<gDat.length;i++){
+            if (gDat[i].Id == id){
+                return i;
+            }
+        }
+    }
     $('input[id=popTodo]').click(function (){
         var id = parseInt(document.getElementById('idInput').value)
-        if ( id >0) {
-            for (var i=0;i<gDat.length;i++){
-                if (gDat[i].Id == id){
-                    console.log(gDat[i])
-                    document.getElementById('idInput').value= id ;
-                    document.getElementById('NameInput').value= gDat[i].Name ;
-                    document.getElementById('TimeInput').value = gDat[i].Datetime;
-                    $("#TagInput").val(gDat[i].Tag)  
-                    document.getElementById('HeightInput').value= parseInt(gDat[i].Height); 
-                    document.getElementById('TxtInput').value = gDat[i].Txt;
-                    console.log("pop")
-                    break;
-                }
-            }
+        if ( id >0) {            
+            idx =idToIndex (id);
+            popIdToLinebox(idx);
         }else{
             alert("pop error")
             return ;
@@ -217,7 +228,7 @@
     /*  	get请求    */
     function getJson() {
 		$.ajax({
-			url:'http://localhost:8800/course',
+			url:'/course',
 			type:'get',
 			dataType:'json',
 			success:function (data) {
@@ -240,7 +251,7 @@
 /*  	get请求    */
     function getJson2() {
 		$.ajax({
-			url:'http://localhost:8800/history',
+			url:'/history',
 			type:'get',
 			dataType:'json',
 			success:function (data) {
@@ -282,7 +293,7 @@
         console.log('dt=', dt)
         idMax++; 
         $.ajax({
-            url: "http://127.0.0.1:8800/create",
+            url: "/create",
             type: 'post',
             data: dt,
             success: function (data) {
@@ -300,7 +311,7 @@
     // post to delete请求
     $('input[id=delData]').click(function () {
         $.ajax({
-            url: "http://127.0.0.1:8800/delete",
+            url: "/delete",
             type: 'post',
             data: {
                 name: $('input[type=text]').val()
@@ -310,11 +321,6 @@
             }
         })
     })
-
-
-    function checkWork(xx) {
-        return xx.Tag == "work";
-    }  
 
     function checkTag(xx) {
         return xx.Tag == $("#tagCombo").val();
@@ -387,7 +393,7 @@
             console.log( data[i].Id ,data[i].Tag)
             // data[i].setAttribute("EditState", "true"); 
             // <td width="32" align="center" bgColor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
-            c1.innerHTML="<input type='checkbox' name='checkbox22' value='checkbox'>"
+            c1.innerHTML="<input type='checkbox' class='chk' name='checkbox22' value='checkbox' id='checkbox_"+String(data[i].Id)+"'>"
             c1.align = "center" 
             var c2=row.insertCell(1);
             c2.innerHTML=data[i].Id;            
@@ -407,6 +413,17 @@
 
             // SetRowCanEdit(row)  
         }
+        
+        $('input[type=checkbox]').click(function (){
+            if(this.checked==true){
+                var id = parseInt( this.id.slice(9))
+                console.log("id=",id)
+                if ( id >0) {            
+                    idx =idToIndex (id);
+                    popIdToLinebox(idx);
+                }
+            }
+        })
     }
     
     window.onload=function(){ 
