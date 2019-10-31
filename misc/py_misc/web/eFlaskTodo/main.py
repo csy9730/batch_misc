@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 # Date: 2018/6/5
-
+import os,sys
 import json
 # 导入模块
 from flask import  Flask,render_template,url_for
@@ -15,6 +15,13 @@ class jobList(object):
     def __init__(self,filename="todo.json"):
         self.filename = filename
         self.historyname = filename+'line'
+        if not os.path.exists( self.filename):
+            with open(self.filename, "w") as f:
+                json.dump([],f)
+        if not os.path.exists( self.historyname):
+            with open(self.historyname, "a+") as f:
+                pass 
+                # f.write("\n")  
     def __dict__(self):
         return dict()
     def append(self,dt):
@@ -67,7 +74,7 @@ class jobList(object):
             load_dict = json.load(f)
         self.dat = load_dict
         return load_dict
-cJob = jobList()
+
 
 # 定义路由
 # 路由对应的函数处理
@@ -160,4 +167,5 @@ if __name__ == '__main__':
             "Txt":"",
             "Misc":"",       
         }]
+    cJob = jobList()
     app.run(host="localhost", port=8800, )
