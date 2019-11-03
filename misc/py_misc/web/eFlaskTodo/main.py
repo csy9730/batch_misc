@@ -7,74 +7,12 @@ import json
 from flask import  Flask,render_template,url_for
 from flask import request
 from flask import Response
+from flask import send_file
+from addAttr import jobList
 
 #创建实例化请求对象
 app = Flask(__name__)
-
-class jobList(object):
-    def __init__(self,filename="todo.json"):
-        self.filename = filename
-        self.historyname = filename+'line'
-        if not os.path.exists( self.filename):
-            with open(self.filename, "w") as f:
-                json.dump([],f)
-        if not os.path.exists( self.historyname):
-            with open(self.historyname, "a+") as f:
-                pass 
-                # f.write("\n")  
-    def __dict__(self):
-        return dict()
-    def append(self,dt):
-        data = self.getList()
-        data.append(dt)
-        # 将此时最新的数据再次写入文件中
-        with open(self.filename, "w") as f:
-            f.write(json.dumps(data))
-        with open(self.historyname, "a+") as f:
-            f.write(json.dumps(dt))
-            f.write("\n")
-        return data
-    def delObj(self,obj):
-        data = self.getList()
-        del(data[-1])
-        # 将此时最新的数据再次写入文件中
-        with open(self.filename, "w") as f:
-            f.write(json.dumps(data))
-    def setObj(self,dt):
-        data = self.getList()
-        for i in range(len(data)):
-            if data[i]["Id"] == dt["Id"]:
-                print("del ",data[i])
-                dt["Misc"]=data[i]["Misc"]+dt["Misc"]+";"
-                del data[i]
-                break
-        data.append(dt)
-        # 将此时最新的数据再次写入文件中
-        with open(self.filename, "w") as f:
-            f.write(json.dumps(data))
-        with open(self.historyname, "a+") as f:
-            f.write(json.dumps(dt))
-            f.write("\n")
-        return data
-    def getList2(self):
-        load_dict = []
-        with open(self.historyname, "r") as f:
-            while True:
-                text_line = f.readline()
-                if text_line:
-                    print(type(text_line), text_line)
-                    dct = json.loads(text_line)
-                    #print(load_dict)
-                    load_dict.append(dct)
-                else:
-                    break
-        return load_dict
-    def getList(self):
-        with open(self.filename, "r") as f:
-            load_dict = json.load(f)
-        self.dat = load_dict
-        return load_dict
-
+cJob = jobList()
 
 # 定义路由
 # 路由对应的函数处理
@@ -91,7 +29,10 @@ def index():
 
 # with app.test_request_context():
 # 	print( url_for('static', filename='style.css'))
-
+@app.route('/item/<id>/')
+def item(id):
+    return 'Item:{}'.format(id)
+    
 @app.route("/course")
 def courses():
     load_dict = cJob.getList()
@@ -99,13 +40,21 @@ def courses():
     resp = Response(json.dumps(load_dict))
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
+@app.route("/download/<filename>")    
+def downloadTodo(filename):
+    if filename=="todo":      
+        file_name = cJob.filename
+    elif filename == "history":
+        file_name = cJob.historyname
+    else:
+        return
+    return send_file(f'{file_name}', mimetype='text/json',attachment_filename=f'{file_name}', as_attachment=True)
 @app.route("/history")
 def history():
-    load_dict = cJob.getList2()
+    load_dict = cJob.getHistoryList()
     print(load_dict)
     resp = Response(json.dumps(load_dict))
     resp.headers["Access-Control-Allow-Origin"] = "*"
-
     return resp
 
 # 前端发送ajax动态页面post,put请求,对应set&new
@@ -150,15 +99,7 @@ if __name__ == '__main__':
             "Height": "60",
             "Txt":"",
             "Misc":"",        
-        }, {
-            "Id":"4",
-            "Name": "小雷",
-            "Datetime": "7",
-            "Tag": "work",
-            "Height": "70",
-            "Txt":"",
-            "Misc":"",       
-        }, {
+        },{
             "Id":"5",
             "Name": "小红",
             "Datetime": "8",
@@ -167,5 +108,17 @@ if __name__ == '__main__':
             "Txt":"",
             "Misc":"",       
         }]
-    cJob = jobList()
-    app.run(host="localhost", port=8800, )
+    import argparse
+    parser = argparse.ArgumentParser(description="run flask app")            # description参数可以用于插入描述脚本用途的信息，可以为空
+    parser.add_argument('--host','-i', action="store",help = """input ip address,if host is localhost,only machine self can connect;
+    if host is 0.0.0.0 ,every local machine can connect to host """)
+    parser.add_argument('--port','-p',type =int, action='store',default=8800,help = ' input port number ')
+    # parser.add_argument('--debug','-d',type =bool, action='store',help = 'input debug')
+    args = parser.parse_args()
+    # import socket
+    # mac_name = socket.getfqdn(socket.gethostname(  ))
+    # mac_addr = socket.gethostbyname(mac_name)
+
+    dct = vars(args)
+    print(dct)
+    app.run(**dct )

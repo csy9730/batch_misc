@@ -13,7 +13,13 @@
     <form>
         <label>Id&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="number" id="idInput" name="Id" min=0 /><br>
         <label>Name&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="text" id="NameInput" name="Name"><br>
-        <label>Datetime</label><input type="text" id="TimeInput" name="Datetime"><br>
+        <label>Datetime</label><input type="text" id="TimeInput" name="Datetime"> <!--label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="text" id="TagInput"name="Tag"><br> -->
+        <label>Height&nbsp;&nbsp;</label><input type="number" value=0 id="HeightInput" name="Height" min=0 max=100 > 
+        <br>
+        <label>Project</label><select id="cbxProjectInput" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%"></select>
+        <label>IsProject</label><input type="checkbox" value="checkbox" id="cbxIsProject" title="texx"  >  
+        <br>
+        
         <label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
         <select id="TagInput" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
                     <option value="work" selected=True>work</option>
@@ -24,8 +30,9 @@
                     <option value="keyword">keyword</option> 
                     <option value="others">others</option>                         
         </select>
-        <!--label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="text" id="TagInput"name="Tag"><br> -->
-        <label>Height&nbsp;&nbsp;</label><input type="number" value=0 id="HeightInput" name="Height" min=0 max=100 ><br> 
+        <label>verb</label><select id="VerbInput" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%"></select>
+        <br>
+       
         <textarea  name="Txt" id="TxtInput" placeholder="补充描述" rows = 5 cols = 26></textarea>       
     </form>
 
@@ -59,6 +66,13 @@
                 <option value="100" >Finished</option>
     </select>
     <input type="text" id="nameFilterInput" /><br>
+    <select id="projectCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
+            　　<option value="All" selected=True>All</option>
+    </select>
+    <select id="verbCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
+            　　<option value="All" selected=True>All</option>
+    </select>
+    <br>
     <input type="button" id="sortBtn" value="sorts">
     <select id="sortCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
         　　<option value="idDescend" >idDescend</option>
@@ -90,7 +104,8 @@
             <td width="80" bgColor="#EFEFEF" Name="Tag"  EditType="DropDownList" DataItems="{text:'work',value:'work'},{text:'study',value:'study'},{text:'weekly',value:'weekly'},{text:'relax',value:'relax'}">标签</td>  
             <td width="100" bgColor="#EFEFEF" Name="Datetime" EditType="TextBox">日期</td>  
             <td width="50" bgColor="#EFEFEF" Name="Height" EditType="TextBox">进度</td>  
-            <td width="150" bgColor="#EFEFEF" Name="Txt" EditType="TextBox">文本</td>              
+            <td width="150" bgColor="#EFEFEF" Name="Txt" EditType="TextBox">文本</td>   
+            <td width="150" bgColor="#EFEFEF" Name="button" EditType="TextBox">进度</td>             
             <!-- <td width="120" bgcolor="#EFEFEF" Name="Height" Expression="Amount*Price" Format="#,###.00">进度</td>   -->
             
 
@@ -102,7 +117,8 @@
             <td bgColor="#FFFFFF" Value="weekly">0</td>  
             <td bgColor="#FFFFFF">0</td>  
             <td bgColor="#FFFFFF">0</td>  
-            <td bgColor="#FFFFFF">0</td>            
+            <td bgColor="#FFFFFF">0</td>  
+            <td bgColor="#FFFFFF">0</td>           
         </tr>  
     </table> 
 <!--       <textarea id=txt2 cols=45>ta</textarea>
@@ -274,39 +290,17 @@
 
     // post请求
     $('input[id=submit]').click(function () {
-        var dt = {
-                Id: parseInt($('input[name=Id]').val()),
-                Name: $('input[name=Name]').val(),
-                Datetime: $('input[name=Datetime]').val(),
-                Tag:  $("#TagInput").val(),// $('input[name=Tag]').val(),
-                //tagList[$("#TagInput ").get(0).selectedIndex],
-                // $("#TagInput").find("option:selected").text(),
-                Height: parseInt($('input[name=Height]').val()),
-                //Txt: $('input[name=Txt]').Text(),  
-                Txt: document.getElementById('TxtInput').value,
-                Misc: formatDate(new Date().getTime()),                      
-            }
+        var dt = tableCollect()
         if (dt.Name=='' || dt.Id== 0){
             alert('input none');
             return;
         }
-        console.log('dt=', dt)
-        idMax++; 
-        $.ajax({
-            url: "/create",
-            type: 'post',
-            data: dt,
-            success: function (data) {
-                clearInput()
-                console.log("post=",data);
-                gDat.push(dt)
-                tableDisp(sortedDat(filtDat(gDat)))
-            },
-            error:function () {
-                console.log("get error");
-                idMax--;
-			}
-        })
+        console.log('dt=', dt,idMax)
+        if (dt.Id==idMax){
+            postData();
+        }else{
+            putData();
+        }        
     })
     // post to delete请求
     $('input[id=delData]').click(function () {
@@ -380,9 +374,72 @@
                 bgColor='#00FF00';
             return bgColor;
     }
+    
+    function postData(dt){
+        idMax++; 
+        $.ajax({
+            url: "/create",
+            type: 'post',
+            data: dt,
+            success: function (data) {
+                clearInput()
+                console.log("post=",data);
+                gDat.push(dt)
+                tableDisp(sortedDat(filtDat(gDat)))
+            },
+            error:function () {
+                console.log("post error");
+                idMax--;
+			}
+        })
+    }
+    function putData(dt){
+        $.ajax({
+            url: "/create",
+            type: 'post',
+            data: dt,
+            success: function (data) {
+                clearInput()
+                console.log("put=",data);
+                gDat.push(dt)
+                tableDisp(sortedDat(filtDat(gDat)))
+            },
+            error:function () {
+                console.log("put error");
+			}
+        })
+    }
+    
+    function tableCollect(){
+        return {
+            Id: parseInt($('input[name=Id]').val()),
+            Name: $('input[name=Name]').val(),
+            Datetime: $('input[name=Datetime]').val(),
+            Tag:  $("#TagInput").val(),// $('input[name=Tag]').val(),
+            //tagList[$("#TagInput ").get(0).selectedIndex],
+            // $("#TagInput").find("option:selected").text(),
+            Height: parseInt($('input[name=Height]').val()),
+            //Txt: $('input[name=Txt]').Text(),  
+            Txt: document.getElementById('TxtInput').value,
+            Misc: formatDate(new Date().getTime()), 
+            IsProject: $("#cbxIsProject").checked(), 
+            ParentProject: $("#cbxProjectInput").val(),                     
+        }
+    }
+    function updateCbxProject(data){
+        datFlt =data.filter( function(x){ x.IsProject;} );
+        $("#cbxProjectInput").length=0;
+        $("#cbxProjectInput").add( new Option("all",null) );
+        for (var i=0;i<datFlt.length;i++){            
+            $("#cbxProjectInput").add(new Option(datFlt[i].Name,datFlt[i].Id));
+        }        
+    }
+    //json数据转成显示表格
     function tableDisp(data){
         var table=document.getElementById("tabProduct");
-        table.deleteTFoot()
+        table.deleteTFoot();
+        updateCbxProject(data);
+
         for(var i=table.rows.length-1;i>0;i--){
             table.deleteRow( i)
         }
@@ -390,7 +447,7 @@
             var row=table.insertRow(table.rows.length);
             var c1=row.insertCell(0);
             c1.innerHTML=data[i].Id;
-            console.log( data[i].Id ,data[i].Tag)
+            // console.log( data[i].Id ,data[i].Tag)
             // data[i].setAttribute("EditState", "true"); 
             // <td width="32" align="center" bgColor="#EFEFEF" Name="Id"><input type="checkbox" name="checkbox" value="checkbox" /></td>  
             c1.innerHTML="<input type='checkbox' class='chk' name='checkbox22' value='checkbox' id='checkbox_"+String(data[i].Id)+"'>"
@@ -407,10 +464,12 @@
             c5.innerHTML=data[i].Height;
             var c6=row.insertCell(6);
             c6.innerHTML=data[i].Txt;
+            var c7=row.insertCell(7);
+            c7.innerHTML="<input type='button' class='btn' name='abutton' value='完成' id='full_"+String(data[i].Id)
+                +"'><input type='button' class='btn' name='suspend' value='挂起' id='drop_"+String(data[i].Id)+"'>"
+            c7.align = "center"
             //row.bgColor= tag2Color( data[i].Tag   );
             row.style = "color:"+tag2Color( data[i].Tag   );
-
-
             // SetRowCanEdit(row)  
         }
         
@@ -423,6 +482,18 @@
                     popIdToLinebox(idx);
                 }
             }
+        })
+        $('input[class=btn]').click(function (){
+            var id = parseInt( this.id.slice(5))
+            console.log("id=",id)
+            idx =idToIndex (id);
+            dt = gDat[idx];
+            if (this.name=="suspend")
+                dt.Height = 90;
+            else
+                dt.Height = 99;
+            putData(dt);
+
         })
     }
     
