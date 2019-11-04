@@ -16,12 +16,12 @@
         <label>Datetime</label><input type="text" id="TimeInput" name="Datetime"> <!--label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label><input type="text" id="TagInput"name="Tag"><br> -->
         <label>Height&nbsp;&nbsp;</label><input type="number" value=0 id="HeightInput" name="Height" min=0 max=100 > 
         <br>
-        <label>Project</label><select id="cbxProjectInput" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%"></select>
-        <label>IsProject</label><input type="checkbox" value="checkbox" id="cbxIsProject" title="texx"  >  
+        <label>Project</label><select id="cmbProjectInput" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" ></select>
+        <label>IsProject</label><input type="checkbox" value="checkbox" id="chkIsProject" title="texx"  >  
         <br>
         
         <label>Tag&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-        <select id="TagInput" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
+        <select id="TagInput" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" >
                     <option value="work" selected=True>work</option>
                     <option value="weekly">weekly</option>
                     <option value="study">study</option>
@@ -62,6 +62,7 @@
     <select id="heightCombo" class="form-control" name="leaguerPower" value="${requestScope.leaguer.leaguerPower }" style="width:10%;height:5%">
             　　<option value="All" selected=True>All</option>
                 <option value="0" >Running</option>
+                <option value="85" >RunOrSuspend</option>
                 <option value="90" >Suspend</option>
                 <option value="100" >Finished</option>
     </select>
@@ -161,26 +162,12 @@
         
     }
     $('input[id=newTodo]').click(function (){
-        console.log("new")
-        document.getElementById('idInput').value= idMax ;
-        document.getElementById('TimeInput').value=formatDate(new Date().getTime());
-        $("#TagInput").val('work')  
-        document.getElementById('HeightInput').value= 0; 
-        document.getElementById('TxtInput').value= ""; 
-        //$('input[name=Id]').value = 5
-        //$('input[id=TimeInput]').value = formatDate(new Date().getTime())
-        //$('input[id=TagInput]').value = 'work'
-       // $('input[id=HeightInput]').value = 0
+        console.log("new")   
+        dt = {"Id":idMax,"Name":"","Datetime":formatDate(new Date().getTime()),"Tag":"work",
+            "Height":0,"Txt":"","IsProject":false,"ParentProject":0};
+        popTodoToLinebox(dt);
     })
 
-    function popIdToLinebox(idx){
-        document.getElementById('idInput').value= gDat[idx].Id ;
-        document.getElementById('NameInput').value= gDat[idx].Name ;
-        document.getElementById('TimeInput').value = gDat[idx].Datetime;
-        $("#TagInput").val(gDat[idx].Tag)  
-        document.getElementById('HeightInput').value= parseInt(gDat[idx].Height); 
-        document.getElementById('TxtInput').value = gDat[idx].Txt;
-    }
     function idToIndex(id){
         for (var i=0;i<gDat.length;i++){
             if (gDat[i].Id == id){
@@ -241,33 +228,13 @@
        // document.getElementById("txt2").rows= data.length ;
     }
 
-    /*  	get请求    */
-    function getJson() {
-		$.ajax({
-			url:'/course',
-			type:'get',
-			dataType:'json',
-			success:function (data) {
-                gDat = data   
-                for(var i=0;i<data.length;i++){
-                    idMax= Math.max( parseInt(data[i].Id) +1 ,idMax );            
-                }  
-                tableDisp(sortedDat(filtDat(gDat)) ) 
-			},
-			error:function () {
-				console.log("get error");
-			}
-		})
-    }
-    
 	$('input[id=getData]').click(function (){
-        console.log("get begin");
-        getJson()
+        getJson('/course')
     })
 /*  	get请求    */
-    function getJson2() {
+    function getJson(url) {
 		$.ajax({
-			url:'/history',
+			url:url,
 			type:'get',
 			dataType:'json',
 			success:function (data) {
@@ -278,14 +245,14 @@
                 tableDisp(sortedDat(filtDat(gDat)) ) 
 			},
 			error:function () {
-				console.log("get history error");
+				console.log("get "+url+" error");
 			}
 		})
     }
     
 	$('input[id=history]').click(function (){
         console.log("get history  begin");
-        getJson2()
+        getJson('/history')
     })
 
     // post请求
@@ -297,9 +264,9 @@
         }
         console.log('dt=', dt,idMax)
         if (dt.Id==idMax){
-            postData();
+            postData(dt);
         }else{
-            putData();
+            putData(dt);
         }        
     })
     // post to delete请求
@@ -333,6 +300,8 @@
             return xx.Height >=96;
         }else if(h=="90"){
             return xx.Height >=90 &&  xx.Height <96;
+        }else if(h=="85"){
+            return  xx.Height <96;
         }
         return true;
     }  
@@ -356,6 +325,11 @@
         if ( $("#nameFilterInput").val()  !=""){
             datFlt =datFlt.filter(checkExistName);
         }
+        if ( $("#projectCombo").val() !=0){            
+            datFlt =datFlt.filter( function checkTag(xx) {
+                return xx.ParentProject == $("#projectCombo").val();});
+        }
+        
         return datFlt
     }
     $('input[id=filtTime]').click(function () {
@@ -409,7 +383,25 @@
 			}
         })
     }
-    
+    function popIdToLinebox(idx){
+        dt = gDat[idx];
+        console.log(dt);
+        popTodoToLinebox(dt);
+    }
+    function popTodoToLinebox(dat){
+        document.getElementById('idInput').value= dat.Id ;
+        document.getElementById('NameInput').value= dat.Name ;
+        document.getElementById('TimeInput').value = dat.Datetime;
+        $("#TagInput").val(dat.Tag)  
+        document.getElementById('HeightInput').value= parseInt(dat.Height); 
+        document.getElementById('TxtInput').value = dat.Txt;        
+        document.getElementById('chkIsProject').checked = dat.IsProject=="true";
+        document.getElementById('cmbProjectInput').value = dat.ParentProject;
+        //$('input[name=Id]').value = 5
+        //$('input[id=TimeInput]').value = formatDate(new Date().getTime())
+        //$('input[id=TagInput]').value = 'work'
+       // $('input[id=HeightInput]').value = 0
+    }
     function tableCollect(){
         return {
             Id: parseInt($('input[name=Id]').val()),
@@ -422,27 +414,29 @@
             //Txt: $('input[name=Txt]').Text(),  
             Txt: document.getElementById('TxtInput').value,
             Misc: formatDate(new Date().getTime()), 
-            IsProject: $("#cbxIsProject").checked(), 
-            ParentProject: $("#cbxProjectInput").val(),                     
+            IsProject: document.getElementById("chkIsProject").checked, 
+            ParentProject:parseInt( $("#cmbProjectInput").val()),                     
         }
     }
-    function updateCbxProject(data){
-        datFlt =data.filter( function(x){ x.IsProject;} );
-        $("#cbxProjectInput").length=0;
-        $("#cbxProjectInput").add( new Option("all",null) );
-        for (var i=0;i<datFlt.length;i++){            
-            $("#cbxProjectInput").add(new Option(datFlt[i].Name,datFlt[i].Id));
+    function updateCbxProject(data,objId){
+        datFlt =data.filter( function(x){ return x.IsProject;} );        
+        $(objId)[0].length=0;
+        $(objId)[0].add(new Option("all",0));
+        for (var i=0;i<datFlt.length;i++){        
+            $(objId)[0].add(new Option(datFlt[i].Name,datFlt[i].Id));
         }        
     }
     //json数据转成显示表格
     function tableDisp(data){
         var table=document.getElementById("tabProduct");
         table.deleteTFoot();
-        updateCbxProject(data);
 
+        updateCbxProject(gDat,"#cmbProjectInput"); // 更新全局的project
+        updateCbxProject(gDat,"#projectCombo");
         for(var i=table.rows.length-1;i>0;i--){
             table.deleteRow( i)
         }
+        
         for(var i=0;i<data.length;i++){
             var row=table.insertRow(table.rows.length);
             var c1=row.insertCell(0);
@@ -465,8 +459,11 @@
             var c6=row.insertCell(6);
             c6.innerHTML=data[i].Txt;
             var c7=row.insertCell(7);
-            c7.innerHTML="<input type='button' class='btn' name='abutton' value='完成' id='full_"+String(data[i].Id)
-                +"'><input type='button' class='btn' name='suspend' value='挂起' id='drop_"+String(data[i].Id)+"'>"
+            c7.innerHTML="";
+            if ( data[i].Height<95)
+                c7.innerHTML+="<input type='button' class='btn' name='abutton' value='完成' id='full_"+String(data[i].Id)+"'>";
+            if ( data[i].Height<90)
+                c7.innerHTML+="<input type='button' class='btn' name='suspend' value='挂起' id='drop_"+String(data[i].Id)+"'>"
             c7.align = "center"
             //row.bgColor= tag2Color( data[i].Tag   );
             row.style = "color:"+tag2Color( data[i].Tag   );
@@ -498,7 +495,7 @@
     }
     
     window.onload=function(){ 
-        getJson()
+        getJson('/course')
     }
 </script>
 
@@ -508,6 +505,10 @@
             font-size:10pt;  
             line-height:155%;  
         }  
+        select{
+            width:10%;
+            height:5%;
+        }
         table{  
             border-top-width: 1px;  
             border-right-width: 1px;  
@@ -522,6 +523,7 @@
             border-bottom-color: #CCCCCC;  
             border-left-color: #CCCCCC;  
         }  
+
         td{  
             border-bottom-width: 1px;  
             border-bottom-style: solid;  

@@ -56,6 +56,9 @@ tf：转账
 **Q**：如何引入智能情景筛选任务列表？
 **A**: 实现智能过滤器，通过gps定位和时间。
 
+**Q**:到底是使用dict还是使用object？
+**A**: 
+
 **Q**：如何数据库迁移？
 **A**:  
 1. 关闭程序
@@ -77,10 +80,13 @@ tf：转账
 - [ ] html表格批量添加添加过期作废按钮！！！
 - [ ] html添加json下载按钮
 - [ ] 引入分页显示
-- [ ] input:isProject,parentProjectId
-- [ ] input:update combox::project 
-- [ ] project Filter,
-- [ ] heightFilter add Run&suspend
+- [ ] name分裂出verb和对象。
+- [x] fix post(data) without data bug
+- [ ] html填表post不能区分整型和字符串
+- [x] input&pop:isProject=False,parentProjectId=0 !!!
+- [x] input:update combox::project 
+- [x] project Filter,
+- [x] heightFilter add Run&suspend
 - [x] combox动态crud ,ready to show project
 - [x] 表格批量添加checkbox.click()
 - [x] 区分 put 和post

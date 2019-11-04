@@ -20,3 +20,18 @@ def main():
 
 if __name__ == '__main__':
     main()
+"""
+@app.route("/create", methods=["post", ])
+def create():
+    print(request.form.get('name'),type(request.form))
+    # 读取todo.json中的原始的数据
+
+dt = {"Id": request.form.get('Id'),
+        "Name": request.form.get('Name'),
+        "Datetime": request.form.get('Datetime'),
+        "Tag": request.form.get('Tag'),
+        "Height": request.form.get('Height'),
+        "Txt": request.form.get('Txt'),
+        "Misc": request.form.get('Misc'),
+    }
+"""

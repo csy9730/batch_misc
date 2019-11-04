@@ -61,18 +61,11 @@ def history():
 # 定义路由
 @app.route("/create", methods=["post", ])
 def create():
-    print(request.form.get('name'))
-    # 读取todo.json中的原始的数据
-
-    dt = {"Id": request.form.get('Id'),
-        "Name": request.form.get('Name'),
-        "Datetime": request.form.get('Datetime'),
-        "Tag": request.form.get('Tag'),
-        "Height": request.form.get('Height'),
-        "Txt": request.form.get('Txt'),
-        "Misc": request.form.get('Misc'),
-    }
-
+    print(request.form.get('Id'),request.form,type(request.form))
+    # keys = ["Id","Name","Datetime","Tag","Height","Txt","Misc","IsProject","ParentProject"]
+    # dt = {k: request.form.get(k) for k in keys}
+    dt = { k:v for k,v in request.form.items() }
+    print(dt)
     data = cJob.setObj(dt)
     # 再次返回最新的数据 响应会前端
     resp = Response(json.dumps(data))

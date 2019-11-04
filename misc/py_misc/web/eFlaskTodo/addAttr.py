@@ -26,7 +26,8 @@ dct = {
     "Txt": "",
     "Misc": ""
 }
-
+# id从1开始，id=0默认不可用
+#  parentProject=0视为无父级项目。
 class jobList(object):
     def __init__(self,filename="todo.json"):
         self.filename = filename
@@ -95,11 +96,21 @@ class jobList(object):
         with open(self.filename, "w") as f:
             json.dump(flt_dict,f)
         lst = self.getHistoryList()
+        flt_lst = list(filter(addAttr,lst))
+        print(flt_lst) ###
+        with open(self.historyname, "w") as f:pass
+        with open(self.historyname, "a+") as f:
+            for dt in flt_lst:
+                f.write(json.dumps(dt))
+                f.write("\n")
 
 def addAttr(dc):
-    if not "Txt" in dc:
-        dc["Txt"] =""
+    if not "IsProject" in dc:
+        dc["IsProject"] =False
+    if not "ParentProject" in dc:
+        dc["ParentProject"] =0
     return dc
 
 if __name__ == '__main__':
-   addAttr()
+    jobs = jobList()
+    jobs.listAddAttr()
