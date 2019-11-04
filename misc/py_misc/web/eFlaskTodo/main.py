@@ -36,7 +36,7 @@ def item(id):
 @app.route("/course")
 def courses():
     load_dict = cJob.getList()
-    print(load_dict)
+    # print(load_dict)
     resp = Response(json.dumps(load_dict))
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
@@ -52,7 +52,7 @@ def downloadTodo(filename):
 @app.route("/history")
 def history():
     load_dict = cJob.getHistoryList()
-    print(load_dict)
+    # print(load_dict)
     resp = Response(json.dumps(load_dict))
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
@@ -61,10 +61,13 @@ def history():
 # 定义路由
 @app.route("/create", methods=["post", ])
 def create():
-    print(request.form.get('Id'),request.form,type(request.form))
+    # print(request.form.get('Id'),request.form,type(request.form))
+    # print( request.values)
+    dt = json.loads(request.get_data(as_text=True))  
+    # dt = json.loads( request.form)
     # keys = ["Id","Name","Datetime","Tag","Height","Txt","Misc","IsProject","ParentProject"]
     # dt = {k: request.form.get(k) for k in keys}
-    dt = { k:v for k,v in request.form.items() }
+    # dt = { k:v for k,v in request.form.items() }
     print(dt)
     data = cJob.setObj(dt)
     # 再次返回最新的数据 响应会前端
@@ -103,7 +106,7 @@ if __name__ == '__main__':
         }]
     import argparse
     parser = argparse.ArgumentParser(description="run flask app")            # description参数可以用于插入描述脚本用途的信息，可以为空
-    parser.add_argument('--host','-i', action="store",help = """input ip address,if host is localhost,only machine self can connect;
+    parser.add_argument('--ipaddr','-i', action="store",dest="host",help = """input ip address,if host is localhost,only machine self can connect;
     if host is 0.0.0.0 ,every local machine can connect to host """)
     parser.add_argument('--port','-p',type =int, action='store',default=8800,help = ' input port number ')
     # parser.add_argument('--debug','-d',type =bool, action='store',help = 'input debug')

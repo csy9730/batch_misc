@@ -105,6 +105,8 @@ class jobList(object):
                 f.write("\n")
 
 def addAttr(dc):
+    dc["Id"] =int(dc["Id"] )
+    dc["Height"] =int(dc["Height"] )
     if not "IsProject" in dc:
         dc["IsProject"] =False
     if not "ParentProject" in dc:

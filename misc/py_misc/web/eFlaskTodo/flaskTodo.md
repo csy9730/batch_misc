@@ -50,6 +50,60 @@ tf：转账
 
 **Q**:如何允许实现跨域请求
 **A**: `resp.headers["Access-Control-Allow-Origin"] = "*"`
+### ajax交互
+有以下交互方式
+* formdata
+* json
+* xml
+* 其他
+#### formdata交互方式
+
+``` javascript
+    $.ajax({
+        url: "/create",
+        type: 'post',
+        dataType:'json',
+        data: dt,
+        success: function (data) {
+        },
+        error:function () {
+            console.log("post error");
+        }
+    })
+```
+``` python
+@app.route("/create", methods=["post", ])
+def create():
+    dt = { k:v for k,v in request.form.items() }
+    resp = Response(json.dumps(dt))
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    return resp
+```
+
+#### json
+
+``` javascript
+    $.ajax({
+        url: "/create",
+        type: 'post',
+        contentType: 'application/json;charset=utf-8',
+        data: JSON.stringify(dt),
+        success: function (data) {
+        },
+        error:function () {
+            console.log("post error");
+        }
+    })    
+```
+
+``` python
+@app.route("/create", methods=["post", ])
+def create():
+    dt = json.loads(request.get_data(as_text=True))  
+    resp = Response(json.dumps(dt))
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    return resp
+```
 
 ### todo
 
@@ -68,19 +122,28 @@ tf：转账
 5. 开启程序
 
 - [ ] 添加verb属性
+- [ ] 添加url解析 ajax请求，返回翻页查询列表，filter+sorter+Page
+- [x] 修改ajax的text为json格式
 - [x] flask添加历史json下载
-- [ ] 添加切片历史下载
+- [ ] 添加切片历史下载(dateFilter)
+- [ ] flask 配置
 - [ ] 添加login ！！！
 - [ ] 添加数据库，并迁移到数据库 ！！！
-- [ ] 添加project属性，isProject=False,childList=None,parentProject=None,
+- [x] 添加project属性，isProject=False,childList=None,parentProject=None,
 - [x] 启用ip 和port配置
 - [x] 添加无json文件的默认初始化
 - [ ] 
   html端
 - [ ] html表格批量添加添加过期作废按钮！！！
-- [ ] html添加json下载按钮
+- [x] html添加json下载按钮
+- [x] 修改ajax的text为json格式
+- [x] ID和Height设为int类型
+- [x] 任务树支持一级叶节点，不支持多级叶节点
+- [ ] filter剔除关闭的project
 - [ ] 引入分页显示
+- [ ] 通过ipython切割verb和project ！！！
 - [ ] name分裂出verb和对象。
+- [x] 修改newTodo的default原型
 - [x] fix post(data) without data bug
 - [ ] html填表post不能区分整型和字符串
 - [x] input&pop:isProject=False,parentProjectId=0 !!!

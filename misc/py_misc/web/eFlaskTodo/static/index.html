@@ -163,7 +163,7 @@
     }
     $('input[id=newTodo]').click(function (){
         console.log("new")   
-        dt = {"Id":idMax,"Name":"","Datetime":formatDate(new Date().getTime()),"Tag":"work",
+        dt = {"Id":idMax,"Name":"","Datetime":formatDate(new Date().getTime()),"Tag":"weekly",
             "Height":0,"Txt":"","IsProject":false,"ParentProject":0};
         popTodoToLinebox(dt);
     })
@@ -236,11 +236,12 @@
 		$.ajax({
 			url:url,
 			type:'get',
-			dataType:'json',
+            // dataType:'json',
+            contentType: 'application/json;charset=utf-8',
 			success:function (data) {
-                gDat = data   
-                for(var i=0;i<data.length;i++){
-                    idMax= Math.max( parseInt(data[i].Id) +1 ,idMax );            
+                gDat = JSON.parse(data);              
+                for(var i=0;i<gDat.length;i++){
+                    idMax= Math.max( parseInt(gDat[i].Id) +1 ,idMax );            
                 }  
                 tableDisp(sortedDat(filtDat(gDat)) ) 
 			},
@@ -327,7 +328,7 @@
         }
         if ( $("#projectCombo").val() !=0){            
             datFlt =datFlt.filter( function checkTag(xx) {
-                return xx.ParentProject == $("#projectCombo").val();});
+                return xx.ParentProject == $("#projectCombo").val() || xx.Id==$("#projectCombo").val() ;});
         }
         
         return datFlt
@@ -354,7 +355,9 @@
         $.ajax({
             url: "/create",
             type: 'post',
-            data: dt,
+            // dataType:'json',
+            contentType: 'application/json;charset=utf-8',
+            data: JSON.stringify(dt),
             success: function (data) {
                 clearInput()
                 console.log("post=",data);
@@ -371,7 +374,9 @@
         $.ajax({
             url: "/create",
             type: 'post',
-            data: dt,
+            // dataType:'json',
+            contentType: 'application/json;charset=utf-8',
+            data: JSON.stringify(dt) ,
             success: function (data) {
                 clearInput()
                 console.log("put=",data);
@@ -395,7 +400,7 @@
         $("#TagInput").val(dat.Tag)  
         document.getElementById('HeightInput').value= parseInt(dat.Height); 
         document.getElementById('TxtInput').value = dat.Txt;        
-        document.getElementById('chkIsProject').checked = dat.IsProject=="true";
+        document.getElementById('chkIsProject').checked = dat.IsProject;
         document.getElementById('cmbProjectInput').value = dat.ParentProject;
         //$('input[name=Id]').value = 5
         //$('input[id=TimeInput]').value = formatDate(new Date().getTime())
@@ -419,7 +424,9 @@
         }
     }
     function updateCbxProject(data,objId){
-        datFlt =data.filter( function(x){ return x.IsProject;} );        
+        datFlt =data.filter( function(x){ return x.IsProject && x.Height<90;} );  
+        if (datFlt.length+1 == $(objId)[0].length) 
+            return;     
         $(objId)[0].length=0;
         $(objId)[0].add(new Option("all",0));
         for (var i=0;i<datFlt.length;i++){        
@@ -470,7 +477,7 @@
             // SetRowCanEdit(row)  
         }
         
-        $('input[type=checkbox]').click(function (){
+        $('input[class=chk]').click(function (){
             if(this.checked==true){
                 var id = parseInt( this.id.slice(9))
                 console.log("id=",id)
