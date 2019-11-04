@@ -123,6 +123,7 @@ def create():
 
 - [ ] 添加verb属性
 - [ ] 添加url解析 ajax请求，返回翻页查询列表，filter+sorter+Page
+- [x] json to utf-8, ensure_ascii=False
 - [x] 修改ajax的text为json格式
 - [x] flask添加历史json下载
 - [ ] 添加切片历史下载(dateFilter)
@@ -143,6 +144,7 @@ def create():
 - [ ] 引入分页显示
 - [ ] 通过ipython切割verb和project ！！！
 - [ ] name分裂出verb和对象。
+- [ ] fix $('#projectCombo').value=0
 - [x] 修改newTodo的default原型
 - [x] fix post(data) without data bug
 - [ ] html填表post不能区分整型和字符串
