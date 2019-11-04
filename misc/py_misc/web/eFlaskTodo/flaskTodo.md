@@ -11,6 +11,7 @@
 * 动词：
 * emotion：个人情感，可以作为附属属性。
 * 任务or项目：todo & record
+* 状态：计划，执行running，挂起，废弃，完成
 
 语法要素类似：I do something。
 
@@ -123,6 +124,7 @@ def create():
 
 - [ ] 添加verb属性
 - [ ] 添加url解析 ajax请求，返回翻页查询列表，filter+sorter+Page
+- [ ] 自动备份？
 - [x] json to utf-8, ensure_ascii=False
 - [x] 修改ajax的text为json格式
 - [x] flask添加历史json下载
@@ -135,12 +137,17 @@ def create():
 - [x] 添加无json文件的默认初始化
 - [ ] 
   html端
-- [ ] html表格批量添加添加过期作废按钮！！！
+- [ ] design：实现checkbox批量操作，
+- [ ] edit：id和new，pop ，del同一行
+- [ ] code：checkbox激活原址编辑。
+- [ ] 新增配置界面，引入文件导入（上传）按钮
+- [ ] 引入无历史操作
+- [x] html表格批量添加添加过期作废按钮！！！
 - [x] html添加json下载按钮
 - [x] 修改ajax的text为json格式
 - [x] ID和Height设为int类型
 - [x] 任务树支持一级叶节点，不支持多级叶节点
-- [ ] filter剔除关闭的project
+- [x] filter剔除关闭的project
 - [ ] 引入分页显示
 - [ ] 通过ipython切割verb和project ！！！
 - [ ] name分裂出verb和对象。

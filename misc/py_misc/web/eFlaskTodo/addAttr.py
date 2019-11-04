@@ -115,7 +115,21 @@ def addAttr(dc):
     if not "ParentProject" in dc:
         dc["ParentProject"] =0
     return dc
-
+def a():
+    # lst=[dct for dct in load_dict if  re.findall("zalAi",dct["Name"],re.IGNORECASE)]
+    lst = []
+    projectLst=[dct for dct in load_dict if  dct["IsProject"]]
+    kws = ["zalai","spider","flask"]
+    kw = "zalai"
+    idx = 103
+    rc = re.compile("zalai",re.IGNORECASE)
+    for dct in load_dict:
+        if  re.findall("zalAi",dct["Name"],re.IGNORECASE):        
+            if not dct["IsProject"] and dct["ParentProject"]==0:
+                print(dct)
+                dct["ParentProject"] = idx
+                re.substr(rc,,dct["Name"],"")
+                lst.append( dct)
 if __name__ == '__main__':
     jobs = jobList()
     jobs.listAddAttr()
