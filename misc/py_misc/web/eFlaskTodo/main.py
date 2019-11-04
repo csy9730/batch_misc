@@ -108,7 +108,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="run flask app")            # description参数可以用于插入描述脚本用途的信息，可以为空
     parser.add_argument('--ipaddr','-i', action="store",dest="host",help = """input ip address,if host is localhost,only machine self can connect;
     if host is 0.0.0.0 ,every local machine can connect to host """)
-    parser.add_argument('--port','-p',type =int, action='store',default=8800,help = ' input port number ')
+    parser.add_argument('--port','-p',type =int, action='store',default=4000,help = ' input port number ')
     # parser.add_argument('--debug','-d',type =bool, action='store',help = 'input debug')
     args = parser.parse_args()
     # import socket

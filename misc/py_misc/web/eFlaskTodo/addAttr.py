@@ -40,6 +40,33 @@ class jobList(object):
                 pass 
     def __dict__(self):
         return dict()
+    def getHistoryList(self):
+        load_dict = []
+        with open(self.historyname, "r",encoding="utf-8") as f:
+            while True:
+                text_line = f.readline()
+                if text_line:
+                    print(type(text_line), text_line)
+                    dct = json.loads(text_line)
+                    #print(load_dict)
+                    load_dict.append(dct)
+                else:
+                    break
+        return load_dict
+    def getList(self):
+        with open(self.filename, "r",encoding="utf-8") as f:
+            load_dict = json.load(f)
+        self.dat = load_dict
+        return load_dict
+    def setList(self,lst):
+        with open(self.filename, "w",encoding="utf-8") as f:
+            json.dump(lst,f,ensure_ascii=False)
+    def appendHistoryList(self,lst):
+        with open(self.historyname, "a+",encoding="utf-8") as f:
+            for dt in lst:
+                f.write(json.dumps(dt,ensure_ascii=False))
+                f.write("\n")
+    # depreciated
     def append(self,dt):
         data = self.getList()
         data.append(dt)
@@ -65,44 +92,20 @@ class jobList(object):
                 break
         data.append(dt)
         # 将此时最新的数据再次写入文件中
-        with open(self.filename, "w") as f:
-            f.write(json.dumps(data))
-        with open(self.historyname, "a+") as f:
-            f.write(json.dumps(dt))
-            f.write("\n")
+        self.setList(data)
+        self.appendHistoryList( [dt])
         return data
-    def getHistoryList(self):
-        load_dict = []
-        with open(self.historyname, "r") as f:
-            while True:
-                text_line = f.readline()
-                if text_line:
-                    print(type(text_line), text_line)
-                    dct = json.loads(text_line)
-                    #print(load_dict)
-                    load_dict.append(dct)
-                else:
-                    break
-        return load_dict
-    def getList(self):
-        with open(self.filename, "r") as f:
-            load_dict = json.load(f)
-        self.dat = load_dict
-        return load_dict
+    
     def listAddAttr(self):
         load_dict = self.getList()
         flt_dict = list(filter(addAttr,load_dict))
         print(flt_dict) ###
-        with open(self.filename, "w") as f:
-            json.dump(flt_dict,f)
+        self.setList(flt_dict)
         lst = self.getHistoryList()
         flt_lst = list(filter(addAttr,lst))
-        print(flt_lst) ###
+        print(flt_lst) 
         with open(self.historyname, "w") as f:pass
-        with open(self.historyname, "a+") as f:
-            for dt in flt_lst:
-                f.write(json.dumps(dt))
-                f.write("\n")
+        self.appendHistoryList(flt_lst)
 
 def addAttr(dc):
     dc["Id"] =int(dc["Id"] )
